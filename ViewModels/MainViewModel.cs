@@ -1,3 +1,8 @@
+using Avalonia;
+using Avalonia.Collections;
+using DrawMat.Models;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -5,26 +10,45 @@ namespace DrawMat.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
 {
-    private string _greeting = "Hello Avalonia with MVVM!";
+    public ObservableCollection<MyShape> Shapes { get; } = new();
 
-    public string Greeting
+    private MyShape? _currentShape;
+
+    public void StartPolyline(Point start)
     {
-        get => _greeting;
+        _currentShape = new MyShape
+        {
+            Type = "Polyline",
+            StrokeColor = "Black",
+            StrokeThickness = 2,
+            Points = new List<Point> { start }
+        };
+        Shapes.Add(_currentShape);
+    }
+
+    public void ExtendPolyline(Point next)
+    {
+        _currentShape?.Points?.Add(next);
+    }
+
+    public void FinishPolyline()
+    {
+        _currentShape = null;
+    }
+    
+    private string _title = "";
+    public string Title
+    {
+        get => _title;
         set
         {
-            if (_greeting != value)
-            {
-                _greeting = value;
-                OnPropertyChanged();
-            }
+            _title = value;
+            OnPropertyChanged();
         }
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     protected void OnPropertyChanged([CallerMemberName] string? name = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-}
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+}

@@ -9,9 +9,8 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="{Binding Greeting}" FontSize="18"/>
-    </StackPanel>
+    
+    <Canvas Background="White" x:Name="DrawArea"        PointerPressed="Canvas_PointerPressed"
+ PointerMoved="Canvas_PointerMoved"        PointerReleased="Canvas_PointerReleased" />
 </Window>
 
