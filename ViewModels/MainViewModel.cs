@@ -1,24 +1,25 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Collections;
 using DrawMat.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace DrawMat.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<MyShape> Shapes { get; } = new();
-
-    private MyShape? _currentShape;
+    public ObservableCollection<ShapeBase> Shapes { get; } = new();
+    private PolylineShape? _currentShape;
+    private string _title = "";
 
     public void StartPolyline(Point start)
     {
-        _currentShape = new MyShape
+        _currentShape = new PolylineShape
         {
-            Type = "Polyline",
             StrokeColor = "Black",
             StrokeThickness = 2,
             Points = new List<Point> { start }
@@ -36,7 +37,13 @@ public class MainViewModel : INotifyPropertyChanged
         _currentShape = null;
     }
     
-    private string _title = "";
+    public IEnumerable<Control> GetVisuals()
+    {
+        return Shapes
+            .Select(s => s.ToControl())
+            .Where(c => c != null)!;
+    }
+    
     public string Title
     {
         get => _title;

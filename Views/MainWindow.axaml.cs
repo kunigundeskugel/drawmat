@@ -43,17 +43,9 @@ public partial class MainWindow : Window
     private void Redraw()
     {
         DrawArea.Children.Clear();
-        foreach (var shape in ViewModel.Shapes)
+        foreach (var control in ViewModel.GetVisuals())
         {
-            if (shape.Type == "Polyline" && shape.Points != null)
-            {
-                DrawArea.Children.Add(new Polyline
-                {
-                    Points = new AvaloniaList<Point>(shape.Points),
-                    Stroke = Brushes.Black,
-                    StrokeThickness = shape.StrokeThickness
-                });
-            }
+            DrawArea.Children.Add(control);
         }
     }
 }

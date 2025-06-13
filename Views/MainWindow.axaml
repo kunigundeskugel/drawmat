@@ -5,12 +5,18 @@
         x:Class="DrawMat.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="DrawMat"
-        Width="400" Height="200">
+        Width="400"
+        Height="200">
+
     <Window.DataContext>
-        <vm:MainViewModel/>
+        <vm:MainViewModel />
     </Window.DataContext>
-    
-    <Canvas Background="White" x:Name="DrawArea"        PointerPressed="Canvas_PointerPressed"
- PointerMoved="Canvas_PointerMoved"        PointerReleased="Canvas_PointerReleased" />
+
+    <Canvas Background="White"
+            x:Name="DrawArea"
+            PointerPressed="Canvas_PointerPressed"
+            PointerMoved="Canvas_PointerMoved"
+            PointerReleased="Canvas_PointerReleased" />
+
 </Window>
 
