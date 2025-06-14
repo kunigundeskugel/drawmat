@@ -20,7 +20,6 @@ public class MainViewModel : INotifyPropertyChanged
     {
         _currentShape = new PolylineShape
         {
-            StrokeColor = "Black",
             StrokeThickness = 2,
             Points = new List<Point> { start }
         };

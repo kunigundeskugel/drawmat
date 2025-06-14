@@ -12,21 +12,20 @@ namespace DrawMat.Models;
 public abstract class ShapeBase
 {
     public abstract Control ToControl();
-    public Point? Origin { get; set; } = new();
+    public Point Origin { get; set; } = new();
 }
 
 
 public class PolylineShape : ShapeBase
 {
-    public string? StrokeColor { get; set; }
     public double StrokeThickness { get; set; } = 1.0;
-    public List<Point>? Points { get; set; } = new();
+    public List<Point> Points { get; set; } = new();
     
     public override Control ToControl() 
     {
         return new Polyline
         {
-                Points = new AvaloniaList<Point>(Points ?? Enumerable.Empty<Point>()),
+                Points = new AvaloniaList<Point>(Points),
                 Stroke = Brushes.Black,
                 StrokeThickness = StrokeThickness
        };
