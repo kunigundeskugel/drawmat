@@ -1,54 +1,59 @@
 using Avalonia;
 using Avalonia.Collections;
-using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
+using DrawMat.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DrawMat.Models;
 
 public abstract class ShapeBase
 {
-    public Rect BoundingBox { get; set; } = new();
+    public Rect BoundingBox { get; protected set; } = new();
     public Point Origin { get; set; } = new();
-    
+
     public virtual Control ToControl()
     {
         var canvas = new Canvas();
-
         var bboxRect = CreateBoundingBoxVisual();
         if (bboxRect != null)
         {
             canvas.Children.Add(bboxRect);
         }
-
         return canvas;
     }
-    
+
     protected virtual Rectangle CreateBoundingBoxVisual()
     {
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
             StrokeThickness = 2,
+            Fill = Brushes.Transparent,
             Width = BoundingBox.Width,
             Height = BoundingBox.Height
         };
-
         Canvas.SetLeft(rect, BoundingBox.X);
         Canvas.SetTop(rect, BoundingBox.Y);
         return rect;
     }
 }
 
-
 public class PolylineShape : ShapeBase
 {
     public double StrokeThickness { get; set; } = 1.0;
     public List<Point> Points { get; set; } = new();
-    
+
+    public PolylineShape(Point start)
+    {
+        StrokeThickness = 2;
+        Points = new List<Point> { start };
+        BoundingBox = new Rect(start.X, start.Y, 1, 1);
+    }
+
     protected override Rectangle CreateBoundingBoxVisual()
     {
         var rect = base.CreateBoundingBoxVisual();
@@ -56,62 +61,50 @@ public class PolylineShape : ShapeBase
         rect.StrokeThickness = 1;
         return rect;
     }
-    
+
     public override Control ToControl()
     {
-        var canvas = (Canvas)base.ToControl();
-
+        var canvas = new Canvas();
         var polyline = new Polyline
         {
             Points = new AvaloniaList<Point>(Points),
             Stroke = Brushes.Black,
             StrokeThickness = StrokeThickness
         };
-
         canvas.Children.Add(polyline);
+        canvas.Children.Add((Canvas)base.ToControl());
         return canvas;
     }
+
     public void AddPoint(Point next)
     {
         Points.Add(next);
-        double left   = Math.Min(BoundingBox.X, next.X);
-        double top    = Math.Min(BoundingBox.Y, next.Y);
-        double right  = Math.Max(BoundingBox.Right, next.X);
-        double bottom = Math.Max(BoundingBox.Bottom, next.Y);
-
-        BoundingBox = new Rect(left, top, right - left, bottom - top);
+        BoundingBox = BoundingBox.Union(next);
     }
 }
 
 public class GroupShape : ShapeBase
 {
     public List<ShapeBase> Children { get; set; } = new();
+
     public void UpdateBoundingBox()
     {
-        Rect? groupBox = null;
-
-        foreach (var child in Children)
+        if (Children.Count == 0)
         {
-            if (groupBox is null)
-            {
-                groupBox = child.BoundingBox;
-            }
-            else
-            {
-                groupBox = Union(groupBox.Value, child.BoundingBox);
-            }
+            BoundingBox = new Rect();
+            return;
         }
-        if (groupBox is not null)
+        Rect groupBox = Children[0].BoundingBox;
+        foreach (var child in Children.Skip(1))
         {
-            BoundingBox = groupBox.Value;
+                groupBox = groupBox.Union(child.BoundingBox);
         }
+        BoundingBox = groupBox;
     }
-    
+
     public override Control ToControl() 
     {
-        UpdateBoundingBox();
-        var canvas = (Canvas)base.ToControl();
-
+        var canvas = new Canvas();
         foreach (var child in Children)
         {
             var control = child.ToControl();
@@ -120,15 +113,8 @@ public class GroupShape : ShapeBase
                 canvas.Children.Add(control);
             }
         }
+        UpdateBoundingBox();
+        canvas.Children.Add((Canvas)base.ToControl());
         return canvas;
-    }
-    
-    private static Rect Union(Rect a, Rect b)
-    {
-        var left = Math.Min(a.X, b.X);
-        var top = Math.Min(a.Y, b.Y);
-        var right = Math.Max(a.Right, b.Right);
-        var bottom = Math.Max(a.Bottom, b.Bottom);
-        return new Rect(left, top, right - left, bottom - top);
     }
 }

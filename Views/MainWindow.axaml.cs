@@ -4,9 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
-using System.Collections.Generic;
-
 using DrawMat.ViewModels;
+using System.Collections.Generic;
 
 namespace DrawMat.Views;
 

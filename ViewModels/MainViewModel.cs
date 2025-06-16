@@ -18,12 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void StartPolyline(Point start)
     {
-        _currentShape = new PolylineShape
-        {
-            StrokeThickness = 2,
-            Points = new List<Point> { start },
-            BoundingBox = new Rect(start.X, start.Y, 1, 1)
-        };
+        _currentShape = new PolylineShape(start);
         RootGroup.Children.Add(_currentShape);
     }
 
@@ -41,7 +36,7 @@ public class MainViewModel : INotifyPropertyChanged
     {
         yield return RootGroup.ToControl();
     }
-    
+
     public string Title
     {
         get => _title;
