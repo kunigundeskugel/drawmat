@@ -13,6 +13,7 @@ namespace DrawMat.Models;
 public abstract class ShapeBase
 {
     public Rect BoundingBox { get; protected set; } = new();
+    public double BoundingBoxStrokeThickness { get; set; } = 4;
     public Point Origin { get; set; } = new();
 
     public virtual Control ToControl()
@@ -31,7 +32,7 @@ public abstract class ShapeBase
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
-            StrokeThickness = 2,
+            StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
             Width = BoundingBox.Width,
             Height = BoundingBox.Height
@@ -44,21 +45,21 @@ public abstract class ShapeBase
 
 public class PolylineShape : ShapeBase
 {
-    public double StrokeThickness { get; set; } = 1.0;
+    public double StrokeThickness { get; set; } = 2.0;
     public List<Point> Points { get; set; } = new();
 
-    public PolylineShape(Point start)
+    public PolylineShape(Point first, Point second)
     {
-        StrokeThickness = 2;
-        Points = new List<Point> { start };
-        BoundingBox = new Rect(start.X, start.Y, 1, 1);
+        BoundingBoxStrokeThickness = 2;
+        StrokeThickness = StrokeThickness;
+        Points = new List<Point> { first, second };
+        BoundingBox = first.Union(second).AddMargin(4);
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
     {
         var rect = base.CreateBoundingBoxVisual();
         rect.Stroke = Brushes.Red;
-        rect.StrokeThickness = 1;
         return rect;
     }
 
@@ -72,7 +73,7 @@ public class PolylineShape : ShapeBase
             StrokeThickness = StrokeThickness
         };
         canvas.Children.Add(polyline);
-        canvas.Children.Add((Canvas)base.ToControl());
+        canvas.Children.Add(base.ToControl());
         return canvas;
     }
 
@@ -80,6 +81,11 @@ public class PolylineShape : ShapeBase
     {
         Points.Add(next);
         BoundingBox = BoundingBox.Union(next);
+    }
+    
+    public bool IsValid()
+    {
+        return Points.Count > 1;
     }
 }
 
@@ -89,15 +95,11 @@ public class GroupShape : ShapeBase
 
     public void UpdateBoundingBox()
     {
-        if (Children.Count == 0)
-        {
-            BoundingBox = new Rect();
-            return;
-        }
+        if (Children.Count == 0) return;
         Rect groupBox = Children[0].BoundingBox;
         foreach (var child in Children.Skip(1))
         {
-                groupBox = groupBox.Union(child.BoundingBox);
+            groupBox = groupBox.Union(child.BoundingBox);
         }
         BoundingBox = groupBox;
     }
@@ -114,7 +116,7 @@ public class GroupShape : ShapeBase
             }
         }
         UpdateBoundingBox();
-        canvas.Children.Add((Canvas)base.ToControl());
+        canvas.Children.Add(base.ToControl());
         return canvas;
     }
 }

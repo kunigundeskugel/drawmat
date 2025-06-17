@@ -16,9 +16,9 @@ public class MainViewModel : INotifyPropertyChanged
     private PolylineShape? _currentShape;
     private string _title = "";
 
-    public void StartPolyline(Point start)
+    public void StartPolyline(Point first, Point second)
     {
-        _currentShape = new PolylineShape(start);
+        _currentShape = new PolylineShape(first, second);
         RootGroup.Children.Add(_currentShape);
     }
 

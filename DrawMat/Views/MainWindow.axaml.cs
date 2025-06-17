@@ -12,6 +12,7 @@ namespace DrawMat.Views;
 public partial class MainWindow : Window
 {
     public MainViewModel ViewModel => (MainViewModel)DataContext!;
+    public Point _pressedLocation { get; set; } = new Point(0,0);
 
     public MainWindow()
     {
@@ -21,15 +22,21 @@ public partial class MainWindow : Window
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ViewModel.StartPolyline(e.GetPosition(DrawArea));
-        Redraw();
+        _pressedLocation = e.GetPosition(DrawArea);
     }
 
     private void Canvas_PointerMoved(object? sender, PointerEventArgs e)
     {
         if (e.GetCurrentPoint(DrawArea).Properties.IsLeftButtonPressed)
         {
-            ViewModel.ExtendPolyline(e.GetPosition(DrawArea));
+            if (_pressedLocation.X != 0 && _pressedLocation.Y != 0)
+            {
+                ViewModel.StartPolyline(_pressedLocation, e.GetPosition(DrawArea));
+                _pressedLocation = new Point(0,0);
+            } else
+            {
+                ViewModel.ExtendPolyline(e.GetPosition(DrawArea));
+            }
             Redraw();
         }
     }
@@ -37,6 +44,7 @@ public partial class MainWindow : Window
     private void Canvas_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         ViewModel.FinishPolyline();
+        Redraw();
     }
 
     private void Redraw()
