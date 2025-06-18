@@ -41,6 +41,16 @@ public abstract class ShapeBase
         Canvas.SetTop(rect, BoundingBox.Y);
         return rect;
     }
+
+    public static Rect GetBoundingBox(List<Point> pts)
+    {
+        Rect groupBox = new Rect(pts[0].X, pts[0].Y, 0, 0);
+        foreach (var pt in pts.Skip(1))
+        {
+            groupBox = groupBox.Union(pt);
+        }
+        return groupBox;
+    }
 }
 
 public class PolylineShape : ShapeBase
@@ -48,12 +58,12 @@ public class PolylineShape : ShapeBase
     public double StrokeThickness { get; set; } = 2.0;
     public List<Point> Points { get; set; } = new();
 
-    public PolylineShape(Point first, Point second)
+    public PolylineShape(List<Point> points)
     {
         BoundingBoxStrokeThickness = 2;
         StrokeThickness = StrokeThickness;
-        Points = new List<Point> { first, second };
-        BoundingBox = first.Union(second).AddMargin(4);
+        Points = points;
+        BoundingBox = GetBoundingBox(points);
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
