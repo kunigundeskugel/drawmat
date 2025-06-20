@@ -30,9 +30,10 @@ public class GroupShapeTests
 
         var c = a.Union(b);
 
-        c.X.Should().Be(8);
-        c.Y.Should().Be(8);
-        c.Width.Should().Be(0);
-        c.Height.Should().Be(0);
+        c.Should().Be(b);
+
+        var d = new Point(3, 6);
+
+        c.Union(d).Should().Be(new Rect(3, 6, 5, 2));
     }
 }

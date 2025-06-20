@@ -1,6 +1,8 @@
 using Avalonia;
+using Avalonia.Collections;
 using System;
-
+using System.Collections.Generic;
+using System.Linq;
 namespace DrawMat.Utilities;
 
 public static class RectExtensions
@@ -24,8 +26,18 @@ public static class RectExtensions
     }
 
     public static Rect Union(this Point pt1, Point pt2)
-    {
+    { 
         return RectExtensions.Union(new Rect(pt1.X, pt1.Y, 0, 0), new Rect(pt2.X, pt2.Y, 0, 0));
+    }
+
+    public static Rect GetBoundingBox(this List<Point> pts)
+    {
+        Rect groupBox = new Rect(pts[0].X, pts[0].Y, 0, 0);
+        foreach (var pt in pts.Skip(1))
+        {
+            groupBox = groupBox.Union(pt);
+        }
+        return groupBox;
     }
 
     public static Rect AddMargin(this Rect rect, double Margin)
@@ -35,7 +47,7 @@ public static class RectExtensions
     
     public static bool IsEmpty(this Rect rect)
     {
-        return rect.X <= 0 && rect.Y <= 0 && rect.Width <= 0 && rect.Height == 0;
+        return rect.X <= 0 && rect.Y <= 0 && rect.Width <= 0 && rect.Height <= 0;
     }
 }
 
