@@ -18,12 +18,12 @@ public class BoundingBoxTests
     [Fact]
     public void BoundingBoxWithZero_ShouldNotBeEmpty()
     {
-        BoundingBox bbox_0 = new BoundingBox(new Point(0, 0));
-        bbox_0.IsEmpty.Should().BeFalse();
-        bbox_0.MinX.Should().Be(0);
-        bbox_0.MinY.Should().Be(0);
-        bbox_0.Width.Should().Be(0);
-        bbox_0.Height.Should().Be(0);
+        BoundingBox bbox = new BoundingBox(new Point(0, 0));
+        bbox.MinX.Should().Be(0);
+        bbox.MinY.Should().Be(0);
+        bbox.Width.Should().Be(0);
+        bbox.Height.Should().Be(0);
+        bbox.IsEmpty.Should().BeFalse();
     }
 
     [Fact]

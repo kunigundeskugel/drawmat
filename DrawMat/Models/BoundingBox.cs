@@ -8,10 +8,10 @@ namespace DrawMat.Models;
 
 public class BoundingBox
 {
-    public double MinX { get; private set; }
-    public double MinY { get; private set; }
-    public double MaxX { get; private set; }
-    public double MaxY { get; private set; }
+    public double MinX { get; private set; } = double.PositiveInfinity;
+    public double MinY { get; private set; } = double.PositiveInfinity;
+    public double MaxX { get; private set; } = double.NegativeInfinity;
+    public double MaxY { get; private set; } = double.NegativeInfinity;
 
     public double Width => MaxX - MinX;
     public double Height => MaxY - MinY;
@@ -20,8 +20,6 @@ public class BoundingBox
 
     public BoundingBox()
     {
-        MinX = MinY = double.PositiveInfinity;
-        MaxX = MaxY = double.NegativeInfinity;
     }
 
     public BoundingBox(double minX, double minY, double maxX, double maxY)
@@ -34,15 +32,11 @@ public class BoundingBox
 
     public BoundingBox(Point p)
     {
-        MinX = MinY = double.PositiveInfinity;
-        MaxX = MaxY = double.NegativeInfinity;
         Include(p.X, p.Y);
     }
 
     public BoundingBox(IEnumerable<Point> points)
     {
-        MinX = MinY = double.PositiveInfinity;
-        MaxX = MaxY = double.NegativeInfinity;
         Include(points);
     }
 
@@ -62,11 +56,13 @@ public class BoundingBox
     public void Include(IEnumerable<Point> points)
     {
         foreach (var p in points)
+        {
             Include(p);
+        }
     }
 
     public bool Contains(Point p)
     {
-        return p.X >= MinX && p.X <= MaxX && p.Y >= MinY && p.Y <= MaxY;
+        return MinX <= p.X && p.X <= MaxX && MinY <= p.Y && p.Y <= MaxY;
     }
 }
