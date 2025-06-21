@@ -12,7 +12,7 @@ namespace DrawMat.Models;
 
 public abstract class ShapeBase
 {
-    public Rect BoundingBox { get; protected set; } = new();
+    public BoundingBox bbox { get; protected set; } = new();
     public double BoundingBoxStrokeThickness { get; set; } = 4;
     public Point Origin { get; set; } = new();
 
@@ -29,16 +29,17 @@ public abstract class ShapeBase
 
     protected virtual Rectangle CreateBoundingBoxVisual()
     {
+        if (bbox.IsEmpty) return new Rectangle();
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
             StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
-            Width = BoundingBox.Width,
-            Height = BoundingBox.Height
+            Width = bbox.Width,
+            Height = bbox.Height
         };
-        Canvas.SetLeft(rect, BoundingBox.X);
-        Canvas.SetTop(rect, BoundingBox.Y);
+        Canvas.SetLeft(rect, bbox.MinX);
+        Canvas.SetTop(rect, bbox.MinY);
         return rect;
     }
 }
@@ -53,7 +54,7 @@ public class PolylineShape : ShapeBase
         BoundingBoxStrokeThickness = 2;
         StrokeThickness = StrokeThickness;
         Points = points;
-        BoundingBox = points.ToList().GetBoundingBox();
+        bbox = new BoundingBox(points);
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
@@ -80,7 +81,7 @@ public class PolylineShape : ShapeBase
     public void AddPoint(Point next)
     {
         Points.Add(next);
-        BoundingBox = BoundingBox.Union(next);
+        bbox.Include(next);
     }
 }
 
@@ -91,15 +92,15 @@ public class GroupShape : ShapeBase
     public void UpdateBoundingBox()
     {
         if (Children.Count == 0) return;
-        Rect groupBox = Children[0].BoundingBox;
+        BoundingBox groupBox = Children[0].bbox;
         foreach (var child in Children.Skip(1))
         {
-            groupBox = groupBox.Union(child.BoundingBox);
+            groupBox.Include(child.bbox);
         }
-        BoundingBox = groupBox;
+        bbox = groupBox;
     }
 
-    public override Control ToControl() 
+    public override Control ToControl()
     {
         var canvas = new Canvas();
         foreach (var child in Children)

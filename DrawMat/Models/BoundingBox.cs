@@ -61,6 +61,15 @@ public class BoundingBox
         }
     }
 
+    public void Include(BoundingBox bbox)
+    {
+        if (bbox.IsEmpty)
+            return;
+
+        Include(bbox.MinX, bbox.MinY);
+        Include(bbox.MaxX, bbox.MaxY);
+    }
+
     public bool Contains(Point p)
     {
         return MinX <= p.X && p.X <= MaxX && MinY <= p.Y && p.Y <= MaxY;
