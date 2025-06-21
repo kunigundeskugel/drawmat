@@ -1,0 +1,118 @@
+using Avalonia;
+using Avalonia.Collections;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
+using Avalonia.Media;
+using DrawMat.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace DrawMat.Models;
+
+public abstract class ShapeBase
+{
+    public BoundingBox bbox { get; protected set; } = new();
+    public double BoundingBoxStrokeThickness { get; set; } = 4;
+    public Point Origin { get; set; } = new();
+
+    public virtual Control ToControl()
+    {
+        var canvas = new Canvas();
+        var bboxRect = CreateBoundingBoxVisual();
+        if (bboxRect != null)
+        {
+            canvas.Children.Add(bboxRect);
+        }
+        return canvas;
+    }
+
+    protected virtual Rectangle CreateBoundingBoxVisual()
+    {
+        if (bbox.IsEmpty) return new Rectangle();
+        var rect = new Rectangle
+        {
+            Stroke = Brushes.Blue,
+            StrokeThickness = BoundingBoxStrokeThickness,
+            Fill = Brushes.Transparent,
+            Width = bbox.Width,
+            Height = bbox.Height
+        };
+        Canvas.SetLeft(rect, bbox.MinX);
+        Canvas.SetTop(rect, bbox.MinY);
+        return rect;
+    }
+}
+
+public class PolylineShape : ShapeBase
+{
+    public double StrokeThickness { get; set; } = 2.0;
+    public List<Point> Points { get; set; } = new();
+
+    public PolylineShape(List<Point> points)
+    {
+        BoundingBoxStrokeThickness = 2;
+        StrokeThickness = StrokeThickness;
+        Points = points;
+        bbox = new BoundingBox(points);
+    }
+
+    protected override Rectangle CreateBoundingBoxVisual()
+    {
+        var rect = base.CreateBoundingBoxVisual();
+        rect.Stroke = Brushes.Red;
+        return rect;
+    }
+
+    public override Control ToControl()
+    {
+        var canvas = new Canvas();
+        var polyline = new Polyline
+        {
+            Points = new AvaloniaList<Point>(Points),
+            Stroke = Brushes.Black,
+            StrokeThickness = StrokeThickness
+        };
+        canvas.Children.Add(polyline);
+        canvas.Children.Add(base.ToControl());
+        return canvas;
+    }
+
+    public void AddPoint(Point next)
+    {
+        Points.Add(next);
+        bbox.Include(next);
+    }
+}
+
+public class GroupShape : ShapeBase
+{
+    public List<ShapeBase> Children { get; set; } = new();
+
+    public void UpdateBoundingBox()
+    {
+        if (Children.Count == 0) return;
+        BoundingBox groupBox = Children[0].bbox;
+        foreach (var child in Children.Skip(1))
+        {
+            groupBox.Include(child.bbox);
+        }
+        bbox = groupBox;
+    }
+
+    public override Control ToControl()
+    {
+        var canvas = new Canvas();
+        foreach (var child in Children)
+        {
+            var control = child.ToControl();
+            if (control != null)
+            {
+                canvas.Children.Add(control);
+            }
+        }
+        UpdateBoundingBox();
+        canvas.Children.Add(base.ToControl());
+        return canvas;
+    }
+}

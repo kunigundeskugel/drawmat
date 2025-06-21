@@ -4,9 +4,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Media;
-using System.Collections.Generic;
-
 using DrawMat.ViewModels;
+using System.Collections.Generic;
 
 namespace DrawMat.Views;
 
@@ -28,16 +27,14 @@ public partial class MainWindow : Window
 
     private void Canvas_PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (e.GetCurrentPoint(DrawArea).Properties.IsLeftButtonPressed)
-        {
-            ViewModel.ExtendPolyline(e.GetPosition(DrawArea));
-            Redraw();
-        }
+        ViewModel.ExtendPolyline(e.GetPosition(DrawArea));
+        Redraw();
     }
 
     private void Canvas_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         ViewModel.FinishPolyline();
+        Redraw();
     }
 
     private void Redraw()
