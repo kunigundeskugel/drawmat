@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Collections;
 using FluentAssertions;
 using DrawMat.Models;
-using DrawMat.Utilities;
 using Xunit;
 namespace DrawMat.Tests.Models;
 

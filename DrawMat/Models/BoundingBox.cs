@@ -63,8 +63,7 @@ public class BoundingBox
 
     public void Include(BoundingBox bbox)
     {
-        if (bbox.IsEmpty)
-            return;
+        if (bbox.IsEmpty) return;
 
         Include(bbox.MinX, bbox.MinY);
         Include(bbox.MaxX, bbox.MaxY);

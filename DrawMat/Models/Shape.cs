@@ -3,7 +3,6 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
-using DrawMat.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +11,7 @@ namespace DrawMat.Models;
 
 public abstract class ShapeBase
 {
-    public BoundingBox bbox { get; protected set; } = new();
+    public BoundingBox BBox { get; protected set; } = new();
     public double BoundingBoxStrokeThickness { get; set; } = 4;
     public Point Origin { get; set; } = new();
 
@@ -29,17 +28,17 @@ public abstract class ShapeBase
 
     protected virtual Rectangle CreateBoundingBoxVisual()
     {
-        if (bbox.IsEmpty) return new Rectangle();
+        if (BBox.IsEmpty) return new Rectangle();
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
             StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
-            Width = bbox.Width,
-            Height = bbox.Height
+            Width = BBox.Width,
+            Height = BBox.Height
         };
-        Canvas.SetLeft(rect, bbox.MinX);
-        Canvas.SetTop(rect, bbox.MinY);
+        Canvas.SetLeft(rect, BBox.MinX);
+        Canvas.SetTop(rect, BBox.MinY);
         return rect;
     }
 }
@@ -54,7 +53,7 @@ public class PolylineShape : ShapeBase
         BoundingBoxStrokeThickness = 2;
         StrokeThickness = StrokeThickness;
         Points = points;
-        bbox = new BoundingBox(points);
+        BBox = new BoundingBox(points);
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
@@ -81,7 +80,7 @@ public class PolylineShape : ShapeBase
     public void AddPoint(Point next)
     {
         Points.Add(next);
-        bbox.Include(next);
+        BBox.Include(next);
     }
 }
 
@@ -91,13 +90,12 @@ public class GroupShape : ShapeBase
 
     public void UpdateBoundingBox()
     {
-        if (Children.Count == 0) return;
-        BoundingBox groupBox = Children[0].bbox;
-        foreach (var child in Children.Skip(1))
+        BoundingBox groupBox = new BoundingBox();
+        foreach (var child in Children)
         {
-            groupBox.Include(child.bbox);
+            groupBox.Include(child.BBox);
         }
-        bbox = groupBox;
+        BBox = groupBox;
     }
 
     public override Control ToControl()
