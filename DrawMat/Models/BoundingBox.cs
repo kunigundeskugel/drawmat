@@ -18,6 +18,8 @@ public class BoundingBox
 
     public bool IsEmpty => Width < 0 || Height < 0;
 
+    public double StrokeThickness { get; set; } = 4;
+    public double Margin { get; set; } = 2;
     public BoundingBox()
     {
     }
@@ -65,8 +67,8 @@ public class BoundingBox
     {
         if (bbox.IsEmpty) return;
 
-        Include(bbox.MinX, bbox.MinY);
-        Include(bbox.MaxX, bbox.MaxY);
+        Include(bbox.MinX - bbox.Margin/2, bbox.MinY - bbox.Margin/2);
+        Include(bbox.MaxX + bbox.Margin/2, bbox.MaxY + bbox.Margin/2);
     }
 
     public bool Contains(Point p)

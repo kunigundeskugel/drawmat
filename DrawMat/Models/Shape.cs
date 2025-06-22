@@ -12,7 +12,6 @@ namespace DrawMat.Models;
 public abstract class ShapeBase
 {
     public BoundingBox BBox { get; protected set; } = new();
-    public double BoundingBoxStrokeThickness { get; set; } = 4;
     public Point Origin { get; set; } = new();
 
     public virtual Control ToControl()
@@ -32,13 +31,13 @@ public abstract class ShapeBase
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
-            StrokeThickness = BoundingBoxStrokeThickness,
+            StrokeThickness = BBox.StrokeThickness,
             Fill = Brushes.Transparent,
-            Width = BBox.Width,
-            Height = BBox.Height
+            Width = BBox.Width + BBox.Margin,
+            Height = BBox.Height + BBox.Margin
         };
-        Canvas.SetLeft(rect, BBox.MinX);
-        Canvas.SetTop(rect, BBox.MinY);
+        Canvas.SetLeft(rect, BBox.MinX - BBox.Margin/2);
+        Canvas.SetTop(rect, BBox.MinY - BBox.Margin/2);
         return rect;
     }
 }
@@ -50,10 +49,9 @@ public class PolylineShape : ShapeBase
 
     public PolylineShape(List<Point> points)
     {
-        BoundingBoxStrokeThickness = 2;
-        StrokeThickness = StrokeThickness;
         Points = points;
         BBox = new BoundingBox(points);
+        BBox.Margin = StrokeThickness;
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
