@@ -12,6 +12,7 @@ namespace DrawMat.Models;
 public abstract class ShapeBase
 {
     public BoundingBox BBox { get; protected set; } = new();
+    public static double BoundingBoxStrokeThickness { get; } = 4;
     public Point Origin { get; set; } = new();
 
     public virtual Control ToControl()
@@ -31,7 +32,7 @@ public abstract class ShapeBase
         var rect = new Rectangle
         {
             Stroke = Brushes.Blue,
-            StrokeThickness = BBox.StrokeThickness,
+            StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
             Width = BBox.Width + BBox.Margin,
             Height = BBox.Height + BBox.Margin
