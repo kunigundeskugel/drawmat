@@ -92,7 +92,9 @@ public class GroupShape : ShapeBase
         BoundingBox groupBox = new BoundingBox();
         foreach (var child in Children)
         {
-            groupBox.Include(child.BBox);
+            var bbox = child.BBox;
+            groupBox.Include(bbox.MinX - bbox.Margin/2, bbox.MinY - bbox.Margin/2);
+            groupBox.Include(bbox.MaxX + bbox.Margin/2, bbox.MaxY + bbox.Margin/2);
         }
         BBox = groupBox;
     }

@@ -66,8 +66,8 @@ public class BoundingBox
     {
         if (bbox.IsEmpty) return;
 
-        Include(bbox.MinX - bbox.Margin/2, bbox.MinY - bbox.Margin/2);
-        Include(bbox.MaxX + bbox.Margin/2, bbox.MaxY + bbox.Margin/2);
+        Include(bbox.MinX, bbox.MinY);
+        Include(bbox.MaxX, bbox.MaxY);
     }
 
     public bool Contains(Point p)
