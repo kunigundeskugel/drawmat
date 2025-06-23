@@ -50,7 +50,6 @@ public class PolylineShape : ShapeBase
 
     public PolylineShape(List<Point> points)
     {
-        StrokeThickness = 2.0;
         BBox = new BoundingBox();
         foreach (var point in points)
         {
