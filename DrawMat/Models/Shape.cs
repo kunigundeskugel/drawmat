@@ -95,8 +95,7 @@ public class GroupShape : ShapeBase
         BoundingBox groupBox = new BoundingBox();
         foreach (var child in Children)
         {
-            groupBox.Include(child.BBox.MinX, child.BBox.MinY);
-            groupBox.Include(child.BBox.MaxX, child.BBox.MaxY);
+            groupBox.Include(child.BBox);
         }
         BBox = groupBox;
     }
