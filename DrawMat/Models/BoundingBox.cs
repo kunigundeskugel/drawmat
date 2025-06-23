@@ -35,6 +35,12 @@ public class BoundingBox
         Include(p.X, p.Y);
     }
 
+    public BoundingBox(Point p, double margin)
+    {
+        Include(p.X - margin/2, p.Y - margin/2);
+        Include(p.X + margin/2, p.Y + margin/2);
+    }
+
     public BoundingBox(IEnumerable<Point> points)
     {
         Include(points);

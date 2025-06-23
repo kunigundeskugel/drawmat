@@ -13,7 +13,6 @@ public abstract class ShapeBase
 {
     public BoundingBox BBox { get; protected set; } = new();
     public static double BoundingBoxStrokeThickness { get; } = 4;
-    public double StrokeThickness { get; set; } = 0.0;
     public Point Origin { get; set; } = new();
 
     public virtual Control ToControl()
@@ -35,11 +34,11 @@ public abstract class ShapeBase
             Stroke = Brushes.Blue,
             StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
-            Width = BBox.Width + StrokeThickness,
-            Height = BBox.Height + StrokeThickness
+            Width = BBox.Width,
+            Height = BBox.Height
         };
-        Canvas.SetLeft(rect, BBox.MinX - StrokeThickness/2);
-        Canvas.SetTop(rect, BBox.MinY - StrokeThickness/2);
+        Canvas.SetLeft(rect, BBox.MinX);
+        Canvas.SetTop(rect, BBox.MinY);
         return rect;
     }
 }
@@ -47,12 +46,16 @@ public abstract class ShapeBase
 public class PolylineShape : ShapeBase
 {
     public List<Point> Points { get; set; } = new();
+    public double StrokeThickness { get; set; } = 2.0;
 
     public PolylineShape(List<Point> points)
     {
-        Points = points;
-        BBox = new BoundingBox(points);
         StrokeThickness = 2.0;
+        BBox = new BoundingBox();
+        foreach (var point in points)
+        {
+            AddPoint(point);
+        }
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
@@ -79,7 +82,7 @@ public class PolylineShape : ShapeBase
     public void AddPoint(Point next)
     {
         Points.Add(next);
-        BBox.Include(next);
+        BBox.Include(new BoundingBox(next, StrokeThickness));
     }
 }
 
@@ -92,8 +95,8 @@ public class GroupShape : ShapeBase
         BoundingBox groupBox = new BoundingBox();
         foreach (var child in Children)
         {
-            groupBox.Include(child.BBox.MinX - child.StrokeThickness/2, child.BBox.MinY - child.StrokeThickness/2);
-            groupBox.Include(child.BBox.MaxX + child.StrokeThickness/2, child.BBox.MaxY + child.StrokeThickness/2);
+            groupBox.Include(child.BBox.MinX, child.BBox.MinY);
+            groupBox.Include(child.BBox.MaxX, child.BBox.MaxY);
         }
         BBox = groupBox;
     }
