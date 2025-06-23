@@ -1,2 +1,4 @@
-bin/
-obj/
+DrawMat/bin/
+DrawMat/obj/
+DrawMat.Tests/bin/
+DrawMat.Tests/obj/

@@ -12,37 +12,31 @@ namespace DrawMat.ViewModels;
 
 public class MainViewModel : INotifyPropertyChanged
 {
-    public ObservableCollection<ShapeBase> Shapes { get; } = new();
+    public GroupShape RootGroup { get; } = new();
     private PolylineShape? _currentShape;
     private string _title = "";
 
     public void StartPolyline(Point start)
     {
-        _currentShape = new PolylineShape
-        {
-            StrokeThickness = 2,
-            Points = new List<Point> { start }
-        };
-        Shapes.Add(_currentShape);
+        _currentShape = new PolylineShape(new List<Point> { start });
+        RootGroup.Children.Add(_currentShape);
     }
 
     public void ExtendPolyline(Point next)
     {
-        _currentShape?.Points?.Add(next);
+        _currentShape?.AddPoint(next);
     }
 
     public void FinishPolyline()
     {
         _currentShape = null;
     }
-    
+
     public IEnumerable<Control> GetVisuals()
     {
-        return Shapes
-            .Select(s => s.ToControl())
-            .Where(c => c != null)!;
+        yield return RootGroup.ToControl();
     }
-    
+
     public string Title
     {
         get => _title;

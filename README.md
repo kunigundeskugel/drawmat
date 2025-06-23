@@ -13,4 +13,5 @@
 ```bash
 nix-shell
 dotnet build
-dotnet run
+dotnet test
+dotnet run --project DrawMat
