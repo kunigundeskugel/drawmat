@@ -13,6 +13,7 @@ public abstract class ShapeBase
 {
     public BoundingBox BBox { get; protected set; } = new();
     public static double BoundingBoxStrokeThickness { get; } = 4;
+    public double StrokeThickness { get; set; } = 0.0;
     public Point Origin { get; set; } = new();
 
     public virtual Control ToControl()
@@ -34,25 +35,24 @@ public abstract class ShapeBase
             Stroke = Brushes.Blue,
             StrokeThickness = BoundingBoxStrokeThickness,
             Fill = Brushes.Transparent,
-            Width = BBox.Width + BBox.Margin,
-            Height = BBox.Height + BBox.Margin
+            Width = BBox.Width + StrokeThickness,
+            Height = BBox.Height + StrokeThickness
         };
-        Canvas.SetLeft(rect, BBox.MinX - BBox.Margin/2);
-        Canvas.SetTop(rect, BBox.MinY - BBox.Margin/2);
+        Canvas.SetLeft(rect, BBox.MinX - StrokeThickness/2);
+        Canvas.SetTop(rect, BBox.MinY - StrokeThickness/2);
         return rect;
     }
 }
 
 public class PolylineShape : ShapeBase
 {
-    public double StrokeThickness { get; set; } = 2.0;
     public List<Point> Points { get; set; } = new();
 
     public PolylineShape(List<Point> points)
     {
         Points = points;
         BBox = new BoundingBox(points);
-        BBox.Margin = StrokeThickness;
+        StrokeThickness = 2.0;
     }
 
     protected override Rectangle CreateBoundingBoxVisual()
@@ -92,9 +92,8 @@ public class GroupShape : ShapeBase
         BoundingBox groupBox = new BoundingBox();
         foreach (var child in Children)
         {
-            var bbox = child.BBox;
-            groupBox.Include(bbox.MinX - bbox.Margin/2, bbox.MinY - bbox.Margin/2);
-            groupBox.Include(bbox.MaxX + bbox.Margin/2, bbox.MaxY + bbox.Margin/2);
+            groupBox.Include(child.BBox.MinX - child.StrokeThickness/2, child.BBox.MinY - child.StrokeThickness/2);
+            groupBox.Include(child.BBox.MaxX + child.StrokeThickness/2, child.BBox.MaxY + child.StrokeThickness/2);
         }
         BBox = groupBox;
     }

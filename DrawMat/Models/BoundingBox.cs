@@ -18,7 +18,6 @@ public class BoundingBox
 
     public bool IsEmpty => Width < 0 || Height < 0;
 
-    public double Margin { get; set; } = 2;
     public BoundingBox()
     {
     }
