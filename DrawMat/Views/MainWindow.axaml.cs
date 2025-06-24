@@ -12,64 +12,35 @@ namespace DrawMat.Views;
 
 public partial class MainWindow : Window
 {
-    private enum Mode { None, DrawingPolyline, Selection }
-    private Mode currentMode = Mode.Selection;
+    private IInteractionMode _currentMode;
     public MainViewModel ViewModel => (MainViewModel)DataContext!;
 
     public MainWindow()
     {
         InitializeComponent();
+
         DataContext = new MainViewModel();
-        DrawPolylineButton.Click += DrawPolylineButton_Click;
-        SelectButton.Click += SelectButton_Click;
-    }
+        _currentMode = new SelectionInteractionMode();
 
-    private void DrawPolylineButton_Click(object? sender, RoutedEventArgs e)
-    {
-        currentMode = Mode.DrawingPolyline;
-    }
-
-    private void SelectButton_Click(object? sender, RoutedEventArgs e)
-    {
-        currentMode = Mode.Selection;
+        DrawPolylineButton.Click += (s, e) => _currentMode = new PolylineDrawingMode();
+        SelectButton.Click += (s, e) => _currentMode = new SelectionInteractionMode();
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (currentMode == Mode.DrawingPolyline)
-        {
-            ViewModel.StartPolyline(e.GetPosition(DrawArea));
-        }
-        else if (currentMode == Mode.Selection)
-        {
-            ViewModel.StartSelection(e.GetPosition(DrawArea));
-        }
+        _currentMode.PointerPressed(ViewModel, e.GetPosition(DrawArea));
         Redraw();
     }
 
     private void Canvas_PointerMoved(object? sender, PointerEventArgs e)
     {
-        if (currentMode == Mode.DrawingPolyline)
-        {
-            ViewModel.ExtendPolyline(e.GetPosition(DrawArea));
-        }
-        else if (currentMode == Mode.Selection)
-        {
-            ViewModel.ExtendSelection(e.GetPosition(DrawArea));
-        }
+        _currentMode.PointerMoved(ViewModel, e.GetPosition(DrawArea));
         Redraw();
     }
 
     private void Canvas_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (currentMode == Mode.DrawingPolyline)
-        {
-            ViewModel.FinishPolyline();
-        }
-        else if (currentMode == Mode.Selection)
-        {
-            ViewModel.FinishSelection();
-        }
+        _currentMode.PointerReleased(ViewModel, e.GetPosition(DrawArea));
         Redraw();
     }
 
@@ -101,6 +72,4 @@ public partial class MainWindow : Window
             DrawArea.Children.Add(selectionRect);
         }
     }
-
 }
-
