@@ -52,24 +52,5 @@ public partial class MainWindow : Window
         {
             DrawArea.Children.Add(control);
         }
-
-        if (ViewModel.SelectionRect is Rect rect)
-        {
-            var selectionRect = new Rectangle
-            {
-                Stroke = Brushes.Blue,
-                StrokeThickness = 1,
-                StrokeDashArray = new Avalonia.Collections.AvaloniaList<double> { 4, 2 },
-                Fill = new SolidColorBrush(Color.FromArgb(50, 0, 120, 200)),
-                Width = rect.Width,
-                Height = rect.Height,
-                IsHitTestVisible = false
-            };
-
-            Canvas.SetLeft(selectionRect, rect.X);
-            Canvas.SetTop(selectionRect, rect.Y);
-
-            DrawArea.Children.Add(selectionRect);
-        }
     }
 }

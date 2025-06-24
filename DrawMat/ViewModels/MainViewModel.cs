@@ -16,39 +16,12 @@ public class MainViewModel : INotifyPropertyChanged
     public GroupShape RootGroup { get; } = new();
     private PolylineShape? _currentShape;
     private string _title = "";
-    private Rect? _selectionRect;
-    public Rect? SelectionRect
-    {
-        get => _selectionRect;
-        private set
-        {
-            _selectionRect = value;
-            OnPropertyChanged(nameof(SelectionRect));
-        }
-    }
-    private Point _selectionStart;
 
-    public void StartSelection(Point start)
-    {
-        _selectionStart = start;
-        SelectionRect = new Rect(start, new Size(0, 0));
-    }
+    public SelectionHandler Selection { get; }
 
-    public void ExtendSelection(Point next)
+    public MainViewModel()
     {
-        if (SelectionRect == null) return;
-        var x = Math.Min(_selectionStart.X, next.X);
-        var y = Math.Min(_selectionStart.Y, next.Y);
-        var width = Math.Abs(next.X - _selectionStart.X);
-        var height = Math.Abs(next.Y - _selectionStart.Y);
-
-        SelectionRect = new Rect(x, y, width, height);
-    }
-
-    public void FinishSelection()
-    {
-        // TODO: find shapes inside
-        SelectionRect = null;
+        Selection = new SelectionHandler(this);
     }
 
     public void StartPolyline(Point start)
@@ -69,7 +42,8 @@ public class MainViewModel : INotifyPropertyChanged
 
     public IEnumerable<Control> GetVisuals()
     {
-        yield return RootGroup.ToControl();
+        return new[] { RootGroup.ToControl() }
+        .Concat(Selection.GetSelectionVisuals());
     }
 
     public string Title

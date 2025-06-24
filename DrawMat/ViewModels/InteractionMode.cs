@@ -18,7 +18,7 @@ public class PolylineDrawingMode : IInteractionMode
 
 public class SelectionInteractionMode : IInteractionMode
 {
-    public void PointerPressed(MainViewModel vm, Point position) => vm.StartSelection(position);
-    public void PointerMoved(MainViewModel vm, Point position) => vm.ExtendSelection(position);
-    public void PointerReleased(MainViewModel vm, Point position) => vm.FinishSelection();
+    public void PointerPressed(MainViewModel vm, Point position) => vm.Selection.StartSelection(position);
+    public void PointerMoved(MainViewModel vm, Point position) => vm.Selection.ExtendSelection(position);
+    public void PointerReleased(MainViewModel vm, Point position) => vm.Selection.FinishSelection();
 }
