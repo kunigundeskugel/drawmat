@@ -14,7 +14,6 @@ namespace DrawMat.ViewModels;
 public class MainViewModel : INotifyPropertyChanged
 {
     public GroupShape RootGroup { get; } = new();
-    private PolylineShape? _currentShape;
     private string _title = "";
 
     public SelectionHandler Selection { get; }
@@ -22,22 +21,6 @@ public class MainViewModel : INotifyPropertyChanged
     public MainViewModel()
     {
         Selection = new SelectionHandler(this);
-    }
-
-    public void StartPolyline(Point start)
-    {
-        _currentShape = new PolylineShape(new List<Point> { start });
-        RootGroup.Children.Add(_currentShape);
-    }
-
-    public void ExtendPolyline(Point next)
-    {
-        _currentShape?.AddPoint(next);
-    }
-
-    public void FinishPolyline()
-    {
-        _currentShape = null;
     }
 
     public IEnumerable<Control> GetVisuals()

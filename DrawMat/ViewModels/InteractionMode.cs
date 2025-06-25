@@ -1,4 +1,9 @@
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Collections;
+using DrawMat.Models;
+using System;
+using System.Collections.Generic;
 
 namespace DrawMat.ViewModels;
 
@@ -11,9 +16,23 @@ public interface IInteractionMode
 
 public class PolylineDrawingMode : IInteractionMode
 {
-    public void PointerPressed(MainViewModel vm, Point position) => vm.StartPolyline(position);
-    public void PointerMoved(MainViewModel vm, Point position) => vm.ExtendPolyline(position);
-    public void PointerReleased(MainViewModel vm, Point position) => vm.FinishPolyline();
+    private PolylineShape? _currentShape;
+
+    public void PointerPressed(MainViewModel vm, Point position)
+    {
+        _currentShape = new PolylineShape(new List<Point> { position });
+        vm.RootGroup.Children.Add(_currentShape);
+    }
+
+    public void PointerMoved(MainViewModel vm, Point position)
+    {
+        _currentShape?.AddPoint(position);
+    }
+
+    public void PointerReleased(MainViewModel vm, Point position)
+    {
+        _currentShape = null;
+    }
 }
 
 public class SelectionInteractionMode : IInteractionMode
