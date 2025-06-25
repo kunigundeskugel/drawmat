@@ -1,0 +1,26 @@
+name: Run Tests in Nix Shell
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v25
+
+    - name: Set NIX_PATH manually
+      run: echo "NIX_PATH=nixpkgs=https://nixos.org/channels/nixos-23.11/nixexprs.tar.xz" >> $GITHUB_ENV
+
+    - name: Build and test inside nix-shell
+      run: |
+        nix-shell --run "
+          dotnet build &&
+          dotnet test --no-build
+        "
