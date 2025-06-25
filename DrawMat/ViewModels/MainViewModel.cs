@@ -17,12 +17,9 @@ public class MainViewModel : INotifyPropertyChanged
     private string _title = "";
     private IInteractionMode _currentMode;
 
-    public SelectionHandler Selection { get; }
-
     public MainViewModel()
     {
-        Selection = new SelectionHandler(this);
-         _currentMode = new SelectionInteractionMode();
+        _currentMode = new SelectionInteractionMode();
     }
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
@@ -35,7 +32,7 @@ public class MainViewModel : INotifyPropertyChanged
     public IEnumerable<Control> GetVisuals()
     {
         return new[] { RootGroup.ToControl() }
-        .Concat(Selection.GetSelectionVisuals());
+        .Concat(_currentMode.GetVisuals());
     }
 
     public string Title
