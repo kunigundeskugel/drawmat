@@ -15,13 +15,22 @@ public class MainViewModel : INotifyPropertyChanged
 {
     public GroupShape RootGroup { get; } = new();
     private string _title = "";
+    private IInteractionMode _currentMode;
 
     public SelectionHandler Selection { get; }
 
     public MainViewModel()
     {
         Selection = new SelectionHandler(this);
+         _currentMode = new SelectionInteractionMode();
     }
+
+    public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
+    public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
+
+    public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
+    public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
+    public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
 
     public IEnumerable<Control> GetVisuals()
     {
