@@ -1,0 +1,25 @@
+name: Run Tests in Nix Shell
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v31
+      with:
+        nix_path: nixpkgs=channel:nixos-25.05
+
+    - name: Build and test inside nix-shell
+      run: |
+        nix-shell --run "
+          dotnet build &&
+          dotnet test --no-build
+        "
