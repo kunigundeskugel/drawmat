@@ -10,13 +10,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install Nix
-      uses: cachix/install-nix-action@v25
-
-    - name: Set NIX_PATH manually
-      run: echo "NIX_PATH=nixpkgs=https://nixos.org/channels/nixos-23.11/nixexprs.tar.xz" >> $GITHUB_ENV
+      uses: cachix/install-nix-action@v31
+      with:
+        nix_path: nixpkgs=channel:nixos-25.05
 
     - name: Build and test inside nix-shell
       run: |
