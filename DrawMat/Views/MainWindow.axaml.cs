@@ -25,6 +25,7 @@ public partial class MainWindow : Window
 
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
+        SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -66,7 +67,10 @@ public partial class MainWindow : Window
         var rtb = new RenderTargetBitmap(new PixelSize(width, height));
         rtb.Render(DrawArea);
 
-        var fileName = "canvas_output.png";
+        var fileName = "DrawMat/out/canvas_output.png";
+        var dir = Path.GetDirectoryName(fileName);
+        if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
         using var stream = File.Create(fileName);
         rtb.Save(stream);
     }
