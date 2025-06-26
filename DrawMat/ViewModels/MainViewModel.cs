@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Collections;
 using DrawMat.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,28 +14,25 @@ namespace DrawMat.ViewModels;
 public class MainViewModel : INotifyPropertyChanged
 {
     public GroupShape RootGroup { get; } = new();
-    private PolylineShape? _currentShape;
     private string _title = "";
+    private IInteractionMode _currentMode;
 
-    public void StartPolyline(Point start)
+    public MainViewModel()
     {
-        _currentShape = new PolylineShape(new List<Point> { start });
-        RootGroup.Children.Add(_currentShape);
+        _currentMode = new SelectionInteractionMode();
     }
 
-    public void ExtendPolyline(Point next)
-    {
-        _currentShape?.AddPoint(next);
-    }
+    public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
+    public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
 
-    public void FinishPolyline()
-    {
-        _currentShape = null;
-    }
+    public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
+    public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
+    public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
 
     public IEnumerable<Control> GetVisuals()
     {
-        yield return RootGroup.ToControl();
+        return new[] { RootGroup.ToControl() }
+        .Concat(_currentMode.GetVisuals());
     }
 
     public string Title

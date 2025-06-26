@@ -12,11 +12,19 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <Canvas Background="White"
-            x:Name="DrawArea"
-            PointerPressed="Canvas_PointerPressed"
-            PointerMoved="Canvas_PointerMoved"
-            PointerReleased="Canvas_PointerReleased" />
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <Button Content="Select Items" Name="SelectButton" />
+            <Button Content="Draw Polyline" Name="DrawPolylineButton" Margin="10,0,0,0" />
+        </StackPanel>
 
+        <Border ClipToBounds="True" Width="800" Height="600">
+            <Canvas Background="White"
+                    x:Name="DrawArea"
+                    PointerPressed="Canvas_PointerPressed"
+                    PointerMoved="Canvas_PointerMoved"
+                    PointerReleased="Canvas_PointerReleased"/>
+        </Border>
+    </StackPanel>
 </Window>
 
