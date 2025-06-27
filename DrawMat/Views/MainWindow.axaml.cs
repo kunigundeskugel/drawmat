@@ -64,7 +64,7 @@ public partial class MainWindow : Window
         if (width == 0 || height == 0)
             return;
 
-        var rtb = new RenderTargetBitmap(new PixelSize(width, height));
+        using var rtb = new RenderTargetBitmap(new PixelSize(width, height));
         rtb.Render(DrawArea);
 
         var fileName = "DrawMat/out/canvas_output.png";
