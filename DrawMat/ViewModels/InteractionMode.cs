@@ -51,6 +51,27 @@ public class PolylineDrawingMode : IInteractionMode
     }
 }
 
+public class ErasingMode : IInteractionMode
+{
+    public void PointerPressed(MainViewModel vm, Point position)
+    {
+    }
+
+    public void PointerMoved(MainViewModel vm, Point position)
+    {
+    }
+
+    public void PointerReleased(MainViewModel vm, Point position)
+    {
+    }
+
+    public IEnumerable<Control> GetVisuals()
+    {
+        var canvas = new Canvas();
+        return new [] {canvas};
+    }
+}
+
 public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;

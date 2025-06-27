@@ -24,6 +24,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
     public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
+    public void SwitchToErasingMode() => _currentMode = new ErasingMode();
 
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
