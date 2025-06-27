@@ -26,6 +26,9 @@ public partial class MainWindow : Window
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
+
+        SaveImageArea.Width = 300;
+        SaveImageArea.Height = 400;
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
