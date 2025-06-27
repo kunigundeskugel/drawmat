@@ -89,6 +89,21 @@ public class GroupShape : ShapeBase
 {
     public List<ShapeBase> Children { get; set; } = new();
 
+    public List<ShapeBase> SearchChildren(Point position)
+    {
+        var hits = new List<ShapeBase>();
+
+        foreach (var child in Children)
+        {
+            if (child.BBox.Contains(position))
+            {
+                hits.Add(child);
+            }
+        }
+
+        return hits;
+    }
+
     public void UpdateBoundingBox()
     {
         BoundingBox groupBox = new BoundingBox();
