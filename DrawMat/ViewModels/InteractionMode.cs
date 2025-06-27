@@ -53,6 +53,7 @@ public class PolylineDrawingMode : IInteractionMode
 
 public class ErasingMode : IInteractionMode
 {
+    private bool _dragging = false;
     public void Erase(MainViewModel vm, Point position){
         var hits = vm.RootGroup.SearchChildren(position);
         foreach (var child in hits)
@@ -62,16 +63,18 @@ public class ErasingMode : IInteractionMode
     }
     public void PointerPressed(MainViewModel vm, Point position)
     {
+        _dragging = true;
         Erase(vm, position);
     }
 
     public void PointerMoved(MainViewModel vm, Point position)
     {
-        Erase(vm, position);
+        if (_dragging) Erase(vm, position);
     }
 
     public void PointerReleased(MainViewModel vm, Point position)
     {
+        _dragging = false;
     }
 
     public IEnumerable<Control> GetVisuals()
