@@ -1,7 +1,15 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using DrawMat.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace DrawMat.Views;
 
@@ -17,6 +25,7 @@ public partial class MainWindow : Window
 
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
+        SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -45,5 +54,24 @@ public partial class MainWindow : Window
         {
             DrawArea.Children.Add(control);
         }
+    }
+    
+    private void OnSaveImageClick(object? sender, RoutedEventArgs e)
+    {
+        var width = (int)DrawArea.Bounds.Width;
+        var height = (int)DrawArea.Bounds.Height;
+
+        if (width == 0 || height == 0)
+            return;
+
+        using var rtb = new RenderTargetBitmap(new PixelSize(width, height));
+        rtb.Render(DrawArea);
+
+        var fileName = "DrawMat/out/canvas_output.png";
+        var dir = Path.GetDirectoryName(fileName);
+        if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        using var stream = File.Create(fileName);
+        rtb.Save(stream);
     }
 }
