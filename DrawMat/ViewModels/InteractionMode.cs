@@ -53,17 +53,21 @@ public class PolylineDrawingMode : IInteractionMode
 
 public class ErasingMode : IInteractionMode
 {
-    public void PointerPressed(MainViewModel vm, Point position)
-    {
+    public void Erase(MainViewModel vm, Point position){
         var hits = vm.RootGroup.SearchChildren(position);
         foreach (var child in hits)
         {
             vm.RootGroup.Children.Remove(child);
         }
     }
+    public void PointerPressed(MainViewModel vm, Point position)
+    {
+        Erase(vm, position);
+    }
 
     public void PointerMoved(MainViewModel vm, Point position)
     {
+        Erase(vm, position);
     }
 
     public void PointerReleased(MainViewModel vm, Point position)
