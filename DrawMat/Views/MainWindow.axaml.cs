@@ -33,7 +33,16 @@ public partial class MainWindow : Window
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ViewModel.PointerPressed(e.GetPosition(DrawArea));
+        var point = e.GetCurrentPoint(DrawArea);
+
+        if (point.Properties.IsRightButtonPressed)
+        {
+            ViewModel.PointerPressedRight(point.Position);
+        }
+        else if (point.Properties.IsLeftButtonPressed)
+        {
+            ViewModel.PointerPressed(point.Position);
+        }
         Redraw();
     }
 

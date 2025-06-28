@@ -15,6 +15,7 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position);
     void PointerMoved(MainViewModel vm, Point position);
     void PointerReleased(MainViewModel vm, Point position);
+    void PointerPressedRight(MainViewModel vm, Point position);
     IEnumerable<Control> GetVisuals();
 }
 
@@ -39,6 +40,10 @@ public class PolylineDrawingMode : IInteractionMode
             vm.RootGroup.Add(_currentShape);
         }
         _currentShape = null;
+    }
+
+    public void PointerPressedRight(MainViewModel vm, Point position)
+    {
     }
 
     public IEnumerable<Control> GetVisuals()
@@ -77,6 +82,10 @@ public class ErasingMode : IInteractionMode
         _dragging = false;
     }
 
+    public void PointerPressedRight(MainViewModel vm, Point position)
+    {
+    }
+
     public IEnumerable<Control> GetVisuals()
     {
         return Enumerable.Empty<Control>();
@@ -113,6 +122,10 @@ public class SelectionInteractionMode : IInteractionMode
         SelectedShapes = new GroupShape();
         SelectedShapes.Add(shapes);
         SelectionRect = null;
+    }
+
+    public void PointerPressedRight(MainViewModel vm, Point position)
+    {
     }
 
     public IEnumerable<Control> GetVisuals()
