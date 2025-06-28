@@ -5,6 +5,7 @@
         x:Class="DrawMat.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="DrawMat"
+        Background="Gray"
         Width="800"
         Height="600"
         MinWidth="400"
