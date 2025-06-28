@@ -79,8 +79,7 @@ public class ErasingMode : IInteractionMode
 
     public IEnumerable<Control> GetVisuals()
     {
-        var canvas = new Canvas();
-        return new [] {canvas};
+        return Enumerable.Empty<Control>();
     }
 }
 
