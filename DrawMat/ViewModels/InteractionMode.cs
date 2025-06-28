@@ -51,6 +51,38 @@ public class PolylineDrawingMode : IInteractionMode
     }
 }
 
+public class ErasingMode : IInteractionMode
+{
+    private bool _dragging = false;
+    public void Erase(MainViewModel vm, Point position){
+        var hits = vm.RootGroup.SearchChildren(position);
+        foreach (var child in hits)
+        {
+            vm.RootGroup.Children.Remove(child);
+        }
+    }
+    public void PointerPressed(MainViewModel vm, Point position)
+    {
+        _dragging = true;
+        Erase(vm, position);
+    }
+
+    public void PointerMoved(MainViewModel vm, Point position)
+    {
+        if (_dragging) Erase(vm, position);
+    }
+
+    public void PointerReleased(MainViewModel vm, Point position)
+    {
+        _dragging = false;
+    }
+
+    public IEnumerable<Control> GetVisuals()
+    {
+        return Enumerable.Empty<Control>();
+    }
+}
+
 public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
