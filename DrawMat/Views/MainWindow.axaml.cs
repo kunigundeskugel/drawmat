@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 
 namespace DrawMat.Views;
 
@@ -56,7 +58,7 @@ public partial class MainWindow : Window
         }
     }
     
-    private void OnSaveImageClick(object? sender, RoutedEventArgs e)
+    private async void OnSaveImageClick(object? sender, RoutedEventArgs e)
     {
         var width = (int)DrawArea.Bounds.Width;
         var height = (int)DrawArea.Bounds.Height;
@@ -67,11 +69,29 @@ public partial class MainWindow : Window
         using var rtb = new RenderTargetBitmap(new PixelSize(width, height));
         rtb.Render(DrawArea);
 
-        var fileName = "DrawMat/out/canvas_output.png";
-        var dir = Path.GetDirectoryName(fileName);
-        if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        var file = await PickSavePathAsync();
+        if (file != null)
+        {
+            using var stream = await file.OpenWriteAsync();
+            rtb.Save(stream);
+        }
+    }
 
-        using var stream = File.Create(fileName);
-        rtb.Save(stream);
+    private async Task<IStorageFile?> PickSavePathAsync()
+    {
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Image As...",
+            SuggestedFileName = "canvas_output.png",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("PNG Image")
+                {
+                    Patterns = new[] { "*.png" }
+                }
+            }
+        });
+
+        return file;
     }
 }
