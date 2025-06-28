@@ -107,7 +107,12 @@ public class SelectionInteractionMode : IInteractionMode
 
     public void PointerReleased(MainViewModel vm, Point position)
     {
-        // TODO: find shapes inside
+        var rect = SelectionRect ?? new Rect();
+        var hits = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
+        foreach (var child in hits)
+        {
+            // TODO: interact with selected children
+        }
         SelectionRect = null;
     }
 

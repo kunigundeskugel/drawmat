@@ -104,6 +104,21 @@ public class GroupShape : ShapeBase
         return hits;
     }
 
+    public List<ShapeBase> SearchChildren(BoundingBox box)
+    {
+        var hits = new List<ShapeBase>();
+
+        foreach (var child in Children)
+        {
+            if (child.BBox.Overlaps(box))
+            {
+                hits.Add(child);
+            }
+        }
+
+        return hits;
+    }
+
     public void UpdateBoundingBox()
     {
         BoundingBox groupBox = new BoundingBox();
