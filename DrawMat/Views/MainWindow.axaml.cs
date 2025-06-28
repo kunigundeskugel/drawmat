@@ -29,6 +29,9 @@ public partial class MainWindow : Window
         EraseButton.Click += (s, e) => ViewModel.SwitchToErasingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
+
+        SaveImageArea.Width = 1000;
+        SaveImageArea.Height = 300;
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
