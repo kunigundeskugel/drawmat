@@ -36,7 +36,7 @@ public class PolylineDrawingMode : IInteractionMode
     {
         if (_currentShape != null)
         {
-            vm.RootGroup.Children.Add(_currentShape);
+            vm.RootGroup.Add(_currentShape);
         }
         _currentShape = null;
     }
@@ -87,6 +87,7 @@ public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
     public Rect? SelectionRect;
+    public GroupShape? SelectedShapes;
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
@@ -108,17 +109,30 @@ public class SelectionInteractionMode : IInteractionMode
     public void PointerReleased(MainViewModel vm, Point position)
     {
         var rect = SelectionRect ?? new Rect();
-        var hits = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
-        foreach (var child in hits)
-        {
-            // TODO: interact with selected children
-        }
+        var shapes = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
+        SelectedShapes = new GroupShape();
+        SelectedShapes.Add(shapes);
         SelectionRect = null;
     }
 
     public IEnumerable<Control> GetVisuals()
     {
         var canvas = new Canvas();
+        if (SelectedShapes != null){
+            foreach (var child in SelectedShapes.Children)
+            {
+                var bboxRect = child.CreateBoundingBoxVisual();
+                if (bboxRect != null)
+                {
+                    canvas.Children.Add(bboxRect);
+                }
+            }
+            var bboxRectGroup = SelectedShapes.CreateBoundingBoxVisual();
+            if (bboxRectGroup != null)
+            {
+                canvas.Children.Add(bboxRectGroup);
+            }
+        }
         if (SelectionRect is Rect rect)
         {
             var selectionRect = new Rectangle

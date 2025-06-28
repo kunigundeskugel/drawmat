@@ -17,16 +17,10 @@ public abstract class ShapeBase
 
     public virtual Control ToControl()
     {
-        var canvas = new Canvas();
-        var bboxRect = CreateBoundingBoxVisual();
-        if (bboxRect != null)
-        {
-            canvas.Children.Add(bboxRect);
-        }
-        return canvas;
+        return new Canvas();
     }
 
-    protected virtual Rectangle CreateBoundingBoxVisual()
+    public virtual Rectangle CreateBoundingBoxVisual()
     {
         if (BBox.IsEmpty) return new Rectangle();
         var rect = new Rectangle
@@ -57,7 +51,7 @@ public class PolylineShape : ShapeBase
         }
     }
 
-    protected override Rectangle CreateBoundingBoxVisual()
+    public override Rectangle CreateBoundingBoxVisual()
     {
         var rect = base.CreateBoundingBoxVisual();
         rect.Stroke = Brushes.Red;
@@ -88,6 +82,29 @@ public class PolylineShape : ShapeBase
 public class GroupShape : ShapeBase
 {
     public List<ShapeBase> Children { get; set; } = new();
+
+    public void Add(ShapeBase shape)
+    {
+        Children.Add(shape);
+        UpdateBoundingBox();
+    }
+
+    public void Add(List<ShapeBase> shapes)
+    {
+        foreach (var shape in shapes)
+        {
+            Children.Add(shape);
+        }
+        UpdateBoundingBox();
+    }
+
+    public override Rectangle CreateBoundingBoxVisual()
+    {
+        UpdateBoundingBox();
+        var rect = base.CreateBoundingBoxVisual();
+        rect.Stroke = Brushes.Blue;
+        return rect;
+    }
 
     public List<ShapeBase> SearchChildren(Point position)
     {
