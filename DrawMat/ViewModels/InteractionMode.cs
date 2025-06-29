@@ -111,7 +111,7 @@ public class SelectionInteractionMode : IInteractionMode
     public void PointerReleased(MainViewModel vm, Point position)
     {
         if (SelectionRect == null) return;
-        var rect = SelectionRect ?? new Rect();
+        var rect = SelectionRect.Value;
         var shapes = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
         SelectedShapes = new GroupShape();
         SelectedShapes.Add(shapes);
