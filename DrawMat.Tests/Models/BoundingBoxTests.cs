@@ -88,4 +88,40 @@ public class BoundingBoxTests
 
         outer.Contains(cornerOut).Should().BeFalse();
     }
+
+    [Fact]
+    public void BoundingBoxOverlaps_WhenBoxIsFullyContained_ShouldReturnTrue()
+    {
+        var outer = new BoundingBox(0, 0, 10, 10);
+        var inner = new BoundingBox(2, 2, 8, 8);
+
+        outer.Overlaps(inner).Should().BeTrue();
+    }
+
+    [Fact]
+    public void BoundingBoxOverlaps_WhenBoxesPartiallyOverlap_ShouldReturnTrue()
+    {
+        var box1 = new BoundingBox(0, 0, 10, 10);
+        var box2 = new BoundingBox(5, 5, 15, 15);
+
+        box1.Overlaps(box2).Should().BeTrue();
+    }
+
+    [Fact]
+    public void BoundingBoxOverlaps_WhenBoxesJustTouchAtTheEdge_ShouldReturnTrue()
+    {
+        var box1 = new BoundingBox(0, 0, 10, 10);
+        var box2 = new BoundingBox(10, 0, 20, 10);
+
+        box1.Overlaps(box2).Should().BeTrue();
+    }
+
+    [Fact]
+    public void BoundingBoxOverlaps_WhenBoxesAreCompletelySeparate_ShouldReturnFalse()
+    {
+        var box1 = new BoundingBox(0, 0, 10, 10);
+        var box2 = new BoundingBox(20, 20, 30, 30);
+
+        box1.Overlaps(box2).Should().BeFalse();
+    }
 }
