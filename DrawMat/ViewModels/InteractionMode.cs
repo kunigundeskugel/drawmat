@@ -89,7 +89,7 @@ public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
     public Rect? SelectionRect;
-    public GroupShape? SelectedShapes;
+    public List<ShapeBase>? SelectedShapes;
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
@@ -112,16 +112,14 @@ public class SelectionInteractionMode : IInteractionMode
     {
         if (SelectionRect == null) return;
         var rect = SelectionRect.Value;
-        var shapes = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
-        SelectedShapes = new GroupShape();
-        SelectedShapes.Add(shapes);
+        SelectedShapes = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
         SelectionRect = null;
     }
 
     public void PointerPressedRight(MainViewModel vm, Point position)
     {
         if (SelectedShapes != null){
-            foreach (var child in SelectedShapes.Children)
+            foreach (var child in SelectedShapes)
             {
                 vm.RootGroup.Children.Remove(child);
             }
@@ -133,7 +131,7 @@ public class SelectionInteractionMode : IInteractionMode
     {
         var canvas = new Canvas();
         if (SelectedShapes != null){
-            foreach (var child in SelectedShapes.Children)
+            foreach (var child in SelectedShapes)
             {
                 var bboxRect = child.CreateBoundingBoxVisual();
                 if (bboxRect != null)
