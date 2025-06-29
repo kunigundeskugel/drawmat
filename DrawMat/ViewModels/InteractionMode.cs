@@ -12,12 +12,10 @@ namespace DrawMat.ViewModels;
 
 public interface IInteractionMode
 {
-    void PointerPressed(MainViewModel vm, Point position);
-    void PointerMoved(MainViewModel vm, Point position);
-    void PointerReleased(MainViewModel vm, Point position);
-    void PointerPressedRight(MainViewModel vm, Point position)
-    {
-    }
+    void PointerPressed(MainViewModel vm, Point position) {}
+    void PointerMoved(MainViewModel vm, Point position) {}
+    void PointerReleased(MainViewModel vm, Point position) {}
+    void PointerPressedRight(MainViewModel vm, Point position) {}
 
     IEnumerable<Control> GetVisuals();
 }
