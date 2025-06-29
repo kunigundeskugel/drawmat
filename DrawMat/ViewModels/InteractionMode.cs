@@ -143,11 +143,6 @@ public class SelectionInteractionMode : IInteractionMode
                     canvas.Children.Add(bboxRect);
                 }
             }
-            var bboxRectGroup = SelectedShapes.CreateBoundingBoxVisual();
-            if (bboxRectGroup != null)
-            {
-                canvas.Children.Add(bboxRectGroup);
-            }
         }
         if (SelectionRect is Rect rect)
         {
