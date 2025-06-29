@@ -127,7 +127,7 @@ public class GroupShape : ShapeBase
 
         foreach (var child in Children)
         {
-            if (child.BBox.Overlaps(box))
+            if (box.Contains(child.BBox))
             {
                 hits.Add(child);
             }
