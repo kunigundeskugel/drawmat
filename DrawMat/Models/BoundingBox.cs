@@ -88,7 +88,7 @@ public class BoundingBox
 
     public bool Overlaps(BoundingBox box)
     {
-        return box.MaxX >= MinX && box.MinX <= MaxX &&
-               box.MaxY >= MinY && box.MinY <= MaxY;
+        return MinX <= box.MaxX && box.MinX <= MaxX &&
+               MinY <= box.MaxY && box.MinY <= MaxY;
     }
 }
