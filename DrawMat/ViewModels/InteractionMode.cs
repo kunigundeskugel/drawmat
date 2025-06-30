@@ -96,6 +96,7 @@ public class SelectionInteractionMode : IInteractionMode
         };
         _activeFlyout.ShowAt(drawArea);
     }
+
     private Control CreateFlyoutContent(MainViewModel vm, Point clickPosition)
     {
         var panel = new StackPanel();
