@@ -26,7 +26,6 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel();
 
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
-        EraseButton.Click += (s, e) => ViewModel.SwitchToErasingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
     }
