@@ -12,9 +12,11 @@ namespace DrawMat.ViewModels;
 
 public interface IInteractionMode
 {
-    void PointerPressed(MainViewModel vm, Point position);
-    void PointerMoved(MainViewModel vm, Point position);
-    void PointerReleased(MainViewModel vm, Point position);
+    void PointerPressed(MainViewModel vm, Point position) {}
+    void PointerMoved(MainViewModel vm, Point position) {}
+    void PointerReleased(MainViewModel vm, Point position) {}
+    void PointerPressedRight(MainViewModel vm, Point position, Control drawArea) {}
+
     IEnumerable<Control> GetVisuals();
 }
 
@@ -36,7 +38,7 @@ public class PolylineDrawingMode : IInteractionMode
     {
         if (_currentShape != null)
         {
-            vm.RootGroup.Children.Add(_currentShape);
+            vm.RootGroup.Add(_currentShape);
         }
         _currentShape = null;
     }
@@ -51,45 +53,16 @@ public class PolylineDrawingMode : IInteractionMode
     }
 }
 
-public class ErasingMode : IInteractionMode
-{
-    private bool _dragging = false;
-    public void Erase(MainViewModel vm, Point position){
-        var hits = vm.RootGroup.SearchChildren(position);
-        foreach (var child in hits)
-        {
-            vm.RootGroup.Children.Remove(child);
-        }
-    }
-    public void PointerPressed(MainViewModel vm, Point position)
-    {
-        _dragging = true;
-        Erase(vm, position);
-    }
-
-    public void PointerMoved(MainViewModel vm, Point position)
-    {
-        if (_dragging) Erase(vm, position);
-    }
-
-    public void PointerReleased(MainViewModel vm, Point position)
-    {
-        _dragging = false;
-    }
-
-    public IEnumerable<Control> GetVisuals()
-    {
-        return Enumerable.Empty<Control>();
-    }
-}
-
 public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
+    private Flyout? _activeFlyout;
     public Rect? SelectionRect;
+    public List<ShapeBase> SelectedShapes = new List<ShapeBase>();
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
+        _activeFlyout?.Hide();
         _selectionStart = position;
         SelectionRect = new Rect(position, new Size(0, 0));
     }
@@ -107,13 +80,56 @@ public class SelectionInteractionMode : IInteractionMode
 
     public void PointerReleased(MainViewModel vm, Point position)
     {
-        // TODO: find shapes inside
+        if (SelectionRect == null) return;
+        var rect = SelectionRect.Value;
+        SelectedShapes = vm.RootGroup.SearchChildren(new BoundingBox(rect.X, rect.Y, rect.Right, rect.Bottom));
         SelectionRect = null;
+    }
+
+    public void PointerPressedRight(MainViewModel vm, Point position, Control drawArea)
+    {
+        _activeFlyout?.Hide();
+        _activeFlyout = new Flyout
+        {
+            Placement = PlacementMode.Pointer,
+            Content = CreateFlyoutContent(vm, position)
+        };
+        _activeFlyout.ShowAt(drawArea);
+    }
+
+    private Control CreateFlyoutContent(MainViewModel vm, Point clickPosition)
+    {
+        var panel = new StackPanel();
+
+        var removeItem = new MenuItem
+        {
+            Header = "Remove"
+        };
+        removeItem.Click += (_, __) =>
+        {
+            foreach (var child in SelectedShapes)
+            {
+                vm.RootGroup.Children.Remove(child);
+            }
+            SelectedShapes.Clear();
+            _activeFlyout?.Hide();
+        };
+        panel.Children.Add(removeItem);
+
+        return panel;
     }
 
     public IEnumerable<Control> GetVisuals()
     {
         var canvas = new Canvas();
+        foreach (var child in SelectedShapes)
+        {
+            var bboxRect = child.CreateBoundingBoxVisual();
+            if (bboxRect != null)
+            {
+                canvas.Children.Add(bboxRect);
+            }
+        }
         if (SelectionRect is Rect rect)
         {
             var selectionRect = new Rectangle

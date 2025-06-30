@@ -26,14 +26,22 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel();
 
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
-        EraseButton.Click += (s, e) => ViewModel.SwitchToErasingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ViewModel.PointerPressed(e.GetPosition(DrawArea));
+        var point = e.GetCurrentPoint(DrawArea);
+
+        if (point.Properties.IsRightButtonPressed)
+        {
+            ViewModel.PointerPressedRight(point.Position, DrawArea);
+        }
+        else if (point.Properties.IsLeftButtonPressed)
+        {
+            ViewModel.PointerPressed(point.Position);
+        }
         Redraw();
     }
 
@@ -58,7 +66,7 @@ public partial class MainWindow : Window
             DrawArea.Children.Add(control);
         }
     }
-    
+
     private async void OnSaveImageClick(object? sender, RoutedEventArgs e)
     {
         var width = (int)DrawArea.Bounds.Width;

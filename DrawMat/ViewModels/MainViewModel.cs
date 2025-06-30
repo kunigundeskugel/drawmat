@@ -24,11 +24,10 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
     public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
-    public void SwitchToErasingMode() => _currentMode = new ErasingMode();
-
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
+    public void PointerPressedRight(Point position, Control drawArea) => _currentMode.PointerPressedRight(this, position, drawArea);
 
     public IEnumerable<Control> GetVisuals()
     {
