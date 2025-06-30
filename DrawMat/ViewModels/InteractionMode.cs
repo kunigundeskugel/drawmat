@@ -15,7 +15,7 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
-    void PointerPressedRight(MainViewModel vm, Point position) {}
+    void PointerPressedRight(MainViewModel vm, Point position, Control drawArea) {}
 
     IEnumerable<Control> GetVisuals();
 }
@@ -88,6 +88,7 @@ public class ErasingMode : IInteractionMode
 public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
+    private Flyout? _activeFlyout;
     public Rect? SelectionRect;
     public List<ShapeBase> SelectedShapes = new List<ShapeBase>();
 
@@ -116,13 +117,35 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public void PointerPressedRight(MainViewModel vm, Point position)
+    public void PointerPressedRight(MainViewModel vm, Point position, Control drawArea)
     {
-        foreach (var child in SelectedShapes)
+        _activeFlyout = new Flyout
         {
-            vm.RootGroup.Children.Remove(child);
-        }
-        SelectedShapes.Clear();
+            Placement = PlacementMode.Pointer,
+            Content = CreateFlyoutContent(vm, position)
+        };
+        _activeFlyout.ShowAt(drawArea);
+    }
+    private Control CreateFlyoutContent(MainViewModel vm, Point clickPosition)
+    {
+        var panel = new StackPanel();
+
+        var removeItem = new MenuItem
+        {
+            Header = "Remove"
+        };
+        removeItem.Click += (_, __) =>
+        {
+            foreach (var child in SelectedShapes)
+            {
+                vm.RootGroup.Children.Remove(child);
+            }
+            SelectedShapes.Clear();
+            _activeFlyout?.Hide();
+        };
+        panel.Children.Add(removeItem);
+
+        return panel;
     }
 
     public IEnumerable<Control> GetVisuals()

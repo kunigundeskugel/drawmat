@@ -37,7 +37,7 @@ public partial class MainWindow : Window
 
         if (point.Properties.IsRightButtonPressed)
         {
-            ViewModel.PointerPressedRight(point.Position);
+            ViewModel.PointerPressedRight(point.Position, DrawArea);
         }
         else if (point.Properties.IsLeftButtonPressed)
         {
@@ -67,7 +67,7 @@ public partial class MainWindow : Window
             DrawArea.Children.Add(control);
         }
     }
-    
+
     private async void OnSaveImageClick(object? sender, RoutedEventArgs e)
     {
         var width = (int)DrawArea.Bounds.Width;
