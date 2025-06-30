@@ -94,6 +94,7 @@ public class SelectionInteractionMode : IInteractionMode
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
+        _activeFlyout?.Hide();
         _selectionStart = position;
         SelectionRect = new Rect(position, new Size(0, 0));
     }
@@ -119,6 +120,7 @@ public class SelectionInteractionMode : IInteractionMode
 
     public void PointerPressedRight(MainViewModel vm, Point position, Control drawArea)
     {
+        _activeFlyout?.Hide();
         _activeFlyout = new Flyout
         {
             Placement = PlacementMode.Pointer,
