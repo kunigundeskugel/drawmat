@@ -122,20 +122,18 @@ public class SelectionInteractionMode : IInteractionMode
         {
             vm.RootGroup.Children.Remove(child);
         }
-        SelectedShapes = new List<ShapeBase>();
+        SelectedShapes.Clear();
     }
 
     public IEnumerable<Control> GetVisuals()
     {
         var canvas = new Canvas();
-        if (SelectedShapes != null){
-            foreach (var child in SelectedShapes)
+        foreach (var child in SelectedShapes)
+        {
+            var bboxRect = child.CreateBoundingBoxVisual();
+            if (bboxRect != null)
             {
-                var bboxRect = child.CreateBoundingBoxVisual();
-                if (bboxRect != null)
-                {
-                    canvas.Children.Add(bboxRect);
-                }
+                canvas.Children.Add(bboxRect);
             }
         }
         if (SelectionRect is Rect rect)
