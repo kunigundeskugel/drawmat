@@ -89,7 +89,7 @@ public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
     public Rect? SelectionRect;
-    public List<ShapeBase>? SelectedShapes;
+    public List<ShapeBase> SelectedShapes = new List<ShapeBase>();
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
@@ -118,13 +118,11 @@ public class SelectionInteractionMode : IInteractionMode
 
     public void PointerPressedRight(MainViewModel vm, Point position)
     {
-        if (SelectedShapes != null){
-            foreach (var child in SelectedShapes)
-            {
-                vm.RootGroup.Children.Remove(child);
-            }
+        foreach (var child in SelectedShapes)
+        {
+            vm.RootGroup.Children.Remove(child);
         }
-        SelectedShapes = null;
+        SelectedShapes = new List<ShapeBase>();
     }
 
     public IEnumerable<Control> GetVisuals()
