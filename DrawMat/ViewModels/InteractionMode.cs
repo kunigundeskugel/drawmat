@@ -15,7 +15,7 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
-    void PointerPressedRight(MainViewModel vm, Point position, Control drawArea) {}
+    void FlyOutPressed(MainViewModel vm, int index) {}
 
     IEnumerable<Control> GetVisuals();
 }
@@ -56,13 +56,11 @@ public class PolylineDrawingMode : IInteractionMode
 public class SelectionInteractionMode : IInteractionMode
 {
     private Point _selectionStart;
-    private Flyout? _activeFlyout;
     public Rect? SelectionRect;
     public List<ShapeBase> SelectedShapes = new List<ShapeBase>();
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
-        _activeFlyout?.Hide();
         _selectionStart = position;
         SelectionRect = new Rect(position, new Size(0, 0));
     }
@@ -86,37 +84,15 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public void PointerPressedRight(MainViewModel vm, Point position, Control drawArea)
+    public void FlyOutPressed(MainViewModel vm, int index)
     {
-        _activeFlyout?.Hide();
-        _activeFlyout = new Flyout
-        {
-            Placement = PlacementMode.Pointer,
-            Content = CreateFlyoutContent(vm, position)
-        };
-        _activeFlyout.ShowAt(drawArea);
-    }
-
-    private Control CreateFlyoutContent(MainViewModel vm, Point clickPosition)
-    {
-        var panel = new StackPanel();
-
-        var removeItem = new MenuItem
-        {
-            Header = "Remove"
-        };
-        removeItem.Click += (_, __) =>
-        {
+        if (index == 0){
             foreach (var child in SelectedShapes)
-            {
-                vm.RootGroup.Children.Remove(child);
-            }
+                {
+                    vm.RootGroup.Children.Remove(child);
+                }
             SelectedShapes.Clear();
-            _activeFlyout?.Hide();
-        };
-        panel.Children.Add(removeItem);
-
-        return panel;
+        }
     }
 
     public IEnumerable<Control> GetVisuals()

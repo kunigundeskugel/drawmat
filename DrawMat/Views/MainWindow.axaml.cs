@@ -18,6 +18,7 @@ namespace DrawMat.Views;
 public partial class MainWindow : Window
 {
     public MainViewModel ViewModel => (MainViewModel)DataContext!;
+    private Flyout? _activeFlyout;
 
     public MainWindow()
     {
@@ -36,10 +37,17 @@ public partial class MainWindow : Window
 
         if (point.Properties.IsRightButtonPressed)
         {
-            ViewModel.PointerPressedRight(point.Position, DrawArea);
+            _activeFlyout?.Hide();
+            _activeFlyout = new Flyout
+            {
+                Placement = PlacementMode.Pointer,
+                Content = CreateFlyoutContentForSelect(point.Position)
+            };
+            _activeFlyout.ShowAt(DrawArea);
         }
         else if (point.Properties.IsLeftButtonPressed)
         {
+            _activeFlyout?.Hide();
             ViewModel.PointerPressed(point.Position);
         }
         Redraw();
@@ -65,6 +73,24 @@ public partial class MainWindow : Window
         {
             DrawArea.Children.Add(control);
         }
+    }
+
+    private Control CreateFlyoutContentForSelect(Point clickPosition)
+    {
+        var panel = new StackPanel();
+
+        var removeItem = new MenuItem
+        {
+            Header = "Remove"
+        };
+        removeItem.Click += (_, __) =>
+        {
+            ViewModel.FlyOutPressed(0);
+            Redraw();
+            _activeFlyout?.Hide();
+        };
+        panel.Children.Add(removeItem);
+        return panel;
     }
 
     private async void OnSaveImageClick(object? sender, RoutedEventArgs e)

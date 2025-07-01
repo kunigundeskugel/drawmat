@@ -27,7 +27,7 @@ public class MainViewModel : INotifyPropertyChanged
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
-    public void PointerPressedRight(Point position, Control drawArea) => _currentMode.PointerPressedRight(this, position, drawArea);
+    public void FlyOutPressed(int index) => _currentMode.FlyOutPressed(this, index);
 
     public IEnumerable<Control> GetVisuals()
     {
