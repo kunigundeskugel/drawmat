@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Collections;
 using Avalonia.Media;
+using DrawMat.Shared;
 using DrawMat.Models;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,12 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
-    void FlyOutPressed(MainViewModel vm, int index) {}
+    void FlyOutPressed(MainViewModel vm, FlyoutActionType type) {}
 
+    IEnumerable<FlyoutActionType> GetSupportedFlyoutActions()
+    {
+        return new List<FlyoutActionType>();
+    }
     IEnumerable<Control> GetVisuals();
 }
 
@@ -84,15 +89,20 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public void FlyOutPressed(MainViewModel vm, int index)
+    public void FlyOutPressed(MainViewModel vm, FlyoutActionType type)
     {
-        if (index == 0){
+        if (type == FlyoutActionType.Remove){
             foreach (var child in SelectedShapes)
                 {
                     vm.RootGroup.Children.Remove(child);
                 }
             SelectedShapes.Clear();
         }
+    }
+
+    public IEnumerable<FlyoutActionType> GetSupportedFlyoutActions()
+    {
+        return new[] {FlyoutActionType.Remove};
     }
 
     public IEnumerable<Control> GetVisuals()

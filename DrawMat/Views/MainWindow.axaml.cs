@@ -5,13 +5,14 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using DrawMat.ViewModels;
+using DrawMat.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
 
 namespace DrawMat.Views;
 
@@ -38,12 +39,16 @@ public partial class MainWindow : Window
         if (point.Properties.IsRightButtonPressed)
         {
             _activeFlyout?.Hide();
-            _activeFlyout = new Flyout
+            var content = CreateFlyoutContent();
+            if ((content as Panel)?.Children.Count > 0)
             {
-                Placement = PlacementMode.Pointer,
-                Content = CreateFlyoutContentForSelect(point.Position)
-            };
-            _activeFlyout.ShowAt(DrawArea);
+                _activeFlyout = new Flyout
+                {
+                    Placement = PlacementMode.Pointer,
+                    Content = content
+                };
+                _activeFlyout.ShowAt(DrawArea);
+            }
         }
         else if (point.Properties.IsLeftButtonPressed)
         {
@@ -75,21 +80,24 @@ public partial class MainWindow : Window
         }
     }
 
-    private Control CreateFlyoutContentForSelect(Point clickPosition)
+    private Control CreateFlyoutContent()
     {
         var panel = new StackPanel();
-
-        var removeItem = new MenuItem
+        var supportedActions = ViewModel.GetSupportedFlyoutActions();
+        foreach (var action in supportedActions)
         {
-            Header = "Remove"
-        };
-        removeItem.Click += (_, __) =>
-        {
-            ViewModel.FlyOutPressed(0);
-            Redraw();
-            _activeFlyout?.Hide();
-        };
-        panel.Children.Add(removeItem);
+            var item = new MenuItem
+            {
+                Header = action.ToString()
+            };
+            item.Click += (_, __) =>
+            {
+                ViewModel.FlyOutPressed(action);
+                Redraw();
+                _activeFlyout?.Hide();
+            };
+            panel.Children.Add(item);
+        }
         return panel;
     }
 

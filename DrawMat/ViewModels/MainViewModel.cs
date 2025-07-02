@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Collections;
+using DrawMat.Shared;
 using DrawMat.Models;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,8 @@ public class MainViewModel : INotifyPropertyChanged
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
-    public void FlyOutPressed(int index) => _currentMode.FlyOutPressed(this, index);
+    public void FlyOutPressed(FlyoutActionType type) => _currentMode.FlyOutPressed(this, type);
+    public IEnumerable<FlyoutActionType> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions();
 
     public IEnumerable<Control> GetVisuals()
     {
