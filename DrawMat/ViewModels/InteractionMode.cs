@@ -93,9 +93,9 @@ public class SelectionInteractionMode : IInteractionMode
     {
         if (type == FlyoutActionType.Remove){
             foreach (var child in SelectedShapes)
-                {
-                    vm.RootGroup.Children.Remove(child);
-                }
+            {
+                vm.RootGroup.Children.Remove(child);
+            }
             SelectedShapes.Clear();
         }
     }
