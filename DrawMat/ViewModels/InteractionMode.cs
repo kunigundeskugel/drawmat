@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Collections;
 using Avalonia.Media;
-using DrawMat.Shared;
 using DrawMat.Models;
 using System;
 using System.Collections.Generic;

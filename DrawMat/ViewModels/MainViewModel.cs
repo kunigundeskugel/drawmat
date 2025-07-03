@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Collections;
-using DrawMat.Shared;
 using DrawMat.Models;
 using System;
 using System.Collections.Generic;

@@ -7,7 +7,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using DrawMat.ViewModels;
-using DrawMat.Shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
