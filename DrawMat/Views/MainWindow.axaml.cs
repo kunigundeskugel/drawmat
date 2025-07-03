@@ -39,8 +39,23 @@ public partial class MainWindow : Window
         if (point.Properties.IsRightButtonPressed)
         {
             _activeFlyout?.Hide();
-            var content = CreateFlyoutContent();
-            if ((content as Panel)?.Children.Count > 0)
+            var panel = new StackPanel();
+            var supportedActions = ViewModel.GetSupportedFlyoutActions();
+            foreach (var action in supportedActions)
+            {
+                var item = new MenuItem
+                {
+                    Header = action.ToString()
+                };
+                item.Click += (_, __) =>
+                {
+                    ViewModel.FlyOutPressed(action);
+                    Redraw();
+                    _activeFlyout?.Hide();
+                };
+                panel.Children.Add(item);
+            }
+            if (panel.Children.Count > 0)
             {
                 _activeFlyout = new Flyout
                 {
@@ -78,27 +93,6 @@ public partial class MainWindow : Window
         {
             DrawArea.Children.Add(control);
         }
-    }
-
-    private Control CreateFlyoutContent()
-    {
-        var panel = new StackPanel();
-        var supportedActions = ViewModel.GetSupportedFlyoutActions();
-        foreach (var action in supportedActions)
-        {
-            var item = new MenuItem
-            {
-                Header = action.ToString()
-            };
-            item.Click += (_, __) =>
-            {
-                ViewModel.FlyOutPressed(action);
-                Redraw();
-                _activeFlyout?.Hide();
-            };
-            panel.Children.Add(item);
-        }
-        return panel;
     }
 
     private async void OnSaveImageClick(object? sender, RoutedEventArgs e)
