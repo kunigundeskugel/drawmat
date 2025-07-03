@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DrawMat.Views;
@@ -41,26 +42,26 @@ public partial class MainWindow : Window
             _activeFlyout?.Hide();
             var panel = new StackPanel();
             var supportedActions = ViewModel.GetSupportedFlyoutActions();
-            foreach (var action in supportedActions)
+            if (supportedActions.Any())
             {
-                var item = new MenuItem
+                foreach (var action in supportedActions)
                 {
-                    Header = action.ToString()
-                };
-                item.Click += (_, __) =>
-                {
-                    ViewModel.FlyOutPressed(action);
-                    Redraw();
-                    _activeFlyout?.Hide();
-                };
-                panel.Children.Add(item);
-            }
-            if (panel.Children.Count > 0)
-            {
+                    var item = new MenuItem
+                    {
+                        Header = action.Key
+                    };
+                    item.Click += (_, __) =>
+                    {
+                        action.Value();
+                        Redraw();
+                        _activeFlyout?.Hide();
+                    };
+                    panel.Children.Add(item);
+                }
                 _activeFlyout = new Flyout
                 {
                     Placement = PlacementMode.Pointer,
-                    Content = content
+                    Content = panel
                 };
                 _activeFlyout.ShowAt(DrawArea);
             }

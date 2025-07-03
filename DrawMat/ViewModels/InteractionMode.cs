@@ -16,11 +16,10 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
-    void FlyOutPressed(MainViewModel vm, FlyoutActionType type) {}
 
-    IEnumerable<FlyoutActionType> GetSupportedFlyoutActions()
+    IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions(MainViewModel vm)
     {
-        return new List<FlyoutActionType>();
+        return Array.Empty<KeyValuePair<string, Action>>();
     }
     IEnumerable<Control> GetVisuals();
 }
@@ -89,20 +88,21 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public void FlyOutPressed(MainViewModel vm, FlyoutActionType type)
+    public void Delete(MainViewModel vm)
     {
-        if (type == FlyoutActionType.Remove){
-            foreach (var child in SelectedShapes)
-            {
-                vm.RootGroup.Children.Remove(child);
-            }
-            SelectedShapes.Clear();
+        foreach (var child in SelectedShapes)
+        {
+            vm.RootGroup.Children.Remove(child);
         }
+        SelectedShapes.Clear();
     }
 
-    public IEnumerable<FlyoutActionType> GetSupportedFlyoutActions()
+    public IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions(MainViewModel vm)
     {
-        return new[] {FlyoutActionType.Remove};
+        return new List<KeyValuePair<string, Action>>
+        {
+            new("Delete", () => Delete(vm))
+        };
     }
 
     public IEnumerable<Control> GetVisuals()

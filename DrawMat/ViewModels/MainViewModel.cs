@@ -28,8 +28,7 @@ public class MainViewModel : INotifyPropertyChanged
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
-    public void FlyOutPressed(FlyoutActionType type) => _currentMode.FlyOutPressed(this, type);
-    public IEnumerable<FlyoutActionType> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions();
+    public IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions(this);
 
     public IEnumerable<Control> GetVisuals()
     {
