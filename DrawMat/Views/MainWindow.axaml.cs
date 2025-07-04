@@ -39,10 +39,10 @@ public partial class MainWindow : Window
         if (point.Properties.IsRightButtonPressed)
         {
             _activeFlyout?.Hide();
-            var panel = new StackPanel();
             var supportedActions = ViewModel.GetSupportedFlyoutActions();
             if (supportedActions.Any())
             {
+                var panel = new StackPanel();
                 foreach (var action in supportedActions)
                 {
                     var item = new MenuItem
