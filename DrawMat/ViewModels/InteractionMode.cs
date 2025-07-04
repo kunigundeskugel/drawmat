@@ -87,7 +87,7 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public void Delete(MainViewModel vm)
+    private void Delete(MainViewModel vm)
     {
         foreach (var child in SelectedShapes)
         {
