@@ -4,13 +4,12 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Collections;
 using Avalonia.Media;
 using DrawMat.Models;
+using DrawMat.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DrawMat.ViewModels;
-
-using FlyoutAction = System.Collections.Generic.KeyValuePair<string, System.Action>;
 
 public interface IInteractionMode
 {

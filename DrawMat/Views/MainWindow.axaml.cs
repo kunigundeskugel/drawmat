@@ -6,6 +6,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using DrawMat.Shared;
 using DrawMat.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -43,15 +44,15 @@ public partial class MainWindow : Window
             if (supportedActions.Any())
             {
                 var panel = new StackPanel();
-                foreach (var (label, execute) in supportedActions)
+                foreach (var action in supportedActions)
                 {
                     var item = new MenuItem
                     {
-                        Header = label
+                        Header = action.Label
                     };
                     item.Click += (_, __) =>
                     {
-                        execute();
+                        action.Execute();
                         Redraw();
                         _activeFlyout?.Hide();
                     };
