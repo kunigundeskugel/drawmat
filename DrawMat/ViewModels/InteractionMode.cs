@@ -10,15 +10,17 @@ using System.Linq;
 
 namespace DrawMat.ViewModels;
 
+using FlyoutAction = System.Collections.Generic.KeyValuePair<string, System.Action>;
+
 public interface IInteractionMode
 {
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
 
-    IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions(MainViewModel vm)
+    IEnumerable<FlyoutAction> GetSupportedFlyoutActions(MainViewModel vm)
     {
-        return Array.Empty<KeyValuePair<string, Action>>();
+        return Array.Empty<FlyoutAction>();
     }
     IEnumerable<Control> GetVisuals();
 }
@@ -87,9 +89,9 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    public IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions(MainViewModel vm)
+    public IEnumerable<FlyoutAction> GetSupportedFlyoutActions(MainViewModel vm)
     {
-        return new List<KeyValuePair<string, Action>>
+        return new List<FlyoutAction>
         {
             new("Delete", () =>
             {
