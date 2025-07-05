@@ -5,19 +5,22 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
+using DrawMat.Shared;
 using DrawMat.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
 
 namespace DrawMat.Views;
 
 public partial class MainWindow : Window
 {
     public MainViewModel ViewModel => (MainViewModel)DataContext!;
+    private Flyout? _activeFlyout;
 
     public MainWindow()
     {
@@ -26,14 +29,48 @@ public partial class MainWindow : Window
         DataContext = new MainViewModel();
 
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
-        EraseButton.Click += (s, e) => ViewModel.SwitchToErasingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        ViewModel.PointerPressed(e.GetPosition(DrawArea));
+        var point = e.GetCurrentPoint(DrawArea);
+
+        if (point.Properties.IsRightButtonPressed)
+        {
+            _activeFlyout?.Hide();
+            var supportedActions = ViewModel.GetSupportedFlyoutActions();
+            if (supportedActions.Any())
+            {
+                var panel = new StackPanel();
+                foreach (var action in supportedActions)
+                {
+                    var item = new MenuItem
+                    {
+                        Header = action.Label
+                    };
+                    item.Click += (_, __) =>
+                    {
+                        action.Execute();
+                        Redraw();
+                        _activeFlyout?.Hide();
+                    };
+                    panel.Children.Add(item);
+                }
+                _activeFlyout = new Flyout
+                {
+                    Placement = PlacementMode.Pointer,
+                    Content = panel
+                };
+                _activeFlyout.ShowAt(DrawArea);
+            }
+        }
+        else if (point.Properties.IsLeftButtonPressed)
+        {
+            _activeFlyout?.Hide();
+            ViewModel.PointerPressed(point.Position);
+        }
         Redraw();
     }
 
@@ -58,7 +95,7 @@ public partial class MainWindow : Window
             DrawArea.Children.Add(control);
         }
     }
-    
+
     private async void OnSaveImageClick(object? sender, RoutedEventArgs e)
     {
         var width = (int)DrawArea.Bounds.Width;
