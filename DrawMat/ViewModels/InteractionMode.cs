@@ -87,20 +87,18 @@ public class SelectionInteractionMode : IInteractionMode
         SelectionRect = null;
     }
 
-    private void Delete(MainViewModel vm)
-    {
-        foreach (var child in SelectedShapes)
-        {
-            vm.RootGroup.Children.Remove(child);
-        }
-        SelectedShapes.Clear();
-    }
-
     public IEnumerable<KeyValuePair<string, Action>> GetSupportedFlyoutActions(MainViewModel vm)
     {
         return new List<KeyValuePair<string, Action>>
         {
-            new("Delete", () => Delete(vm))
+            new("Delete", () =>
+            {
+                foreach (var child in SelectedShapes)
+                {
+                    vm.RootGroup.Children.Remove(child);
+                }
+                SelectedShapes.Clear();
+            })
         };
     }
 
