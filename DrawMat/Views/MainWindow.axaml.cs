@@ -43,15 +43,15 @@ public partial class MainWindow : Window
             if (supportedActions.Any())
             {
                 var panel = new StackPanel();
-                foreach (var action in supportedActions)
+                foreach (var (label, execute) in supportedActions)
                 {
                     var item = new MenuItem
                     {
-                        Header = action.Key
+                        Header = label
                     };
                     item.Click += (_, __) =>
                     {
-                        action.Value();
+                        execute();
                         Redraw();
                         _activeFlyout?.Hide();
                     };
