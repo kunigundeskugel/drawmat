@@ -2,9 +2,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Collections;
 using DrawMat.Models;
+using DrawMat.Shared;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
@@ -24,11 +24,10 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
     public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
-    public void SwitchToErasingMode() => _currentMode = new ErasingMode();
-
     public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
+    public IEnumerable<FlyoutAction> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions(this);
 
     public IEnumerable<Control> GetVisuals()
     {
