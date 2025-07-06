@@ -41,10 +41,12 @@ public class PolylineShape : ShapeBase
 {
     public List<Point> Points { get; set; } = new();
     public double StrokeThickness { get; set; } = 2.0;
+    private Color _strokeColor;
 
-    public PolylineShape(List<Point> points)
+    public PolylineShape(List<Point> points, Color color)
     {
         BBox = new BoundingBox();
+        _strokeColor = color;
         foreach (var point in points)
         {
             AddPoint(point);
@@ -64,7 +66,7 @@ public class PolylineShape : ShapeBase
         var polyline = new Polyline
         {
             Points = new AvaloniaList<Point>(Points),
-            Stroke = Brushes.Black,
+            Stroke = new SolidColorBrush(_strokeColor),
             StrokeThickness = StrokeThickness
         };
         canvas.Children.Add(polyline);

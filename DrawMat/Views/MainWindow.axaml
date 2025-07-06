@@ -31,7 +31,8 @@
         <StackPanel Orientation="Horizontal" Margin="10">
             <colorpicker:ColorPicker x:Name="ColorPickerControl"
                                      Width="100"
-                                     Height="50"/>
+                                     Height="50"
+                                     Color="Blue"/>
         </StackPanel>
     </StackPanel>
 </Window>

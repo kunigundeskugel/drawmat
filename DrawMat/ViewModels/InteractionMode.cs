@@ -16,6 +16,7 @@ public interface IInteractionMode
     void PointerPressed(MainViewModel vm, Point position) {}
     void PointerMoved(MainViewModel vm, Point position) {}
     void PointerReleased(MainViewModel vm, Point position) {}
+    void ColorSelected(MainViewModel vm, Color color) {}
 
     IEnumerable<FlyoutAction> GetSupportedFlyoutActions(MainViewModel vm)
     {
@@ -27,10 +28,11 @@ public interface IInteractionMode
 public class PolylineDrawingMode : IInteractionMode
 {
     private PolylineShape? _currentShape;
+    private Color _currentColor = Colors.Black;
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
-        _currentShape = new PolylineShape(new List<Point> { position });
+        _currentShape = new PolylineShape(new List<Point> { position }, _currentColor);
     }
 
     public void PointerMoved(MainViewModel vm, Point position)
@@ -45,6 +47,11 @@ public class PolylineDrawingMode : IInteractionMode
             vm.RootGroup.Add(_currentShape);
         }
         _currentShape = null;
+    }
+
+    public void ColorSelected(MainViewModel vm, Color color)
+    {
+        _currentColor = color;
     }
 
     public IEnumerable<Control> GetVisuals()
