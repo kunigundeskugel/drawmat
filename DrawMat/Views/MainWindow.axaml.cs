@@ -21,7 +21,6 @@ public partial class MainWindow : Window
 {
     public MainViewModel ViewModel => (MainViewModel)DataContext!;
     private Flyout? _activeFlyout;
-    private Color _color = Colors.Black;
 
     public MainWindow()
     {
@@ -29,20 +28,12 @@ public partial class MainWindow : Window
 
         DataContext = new MainViewModel();
 
-        DrawPolylineButton.Click += (s, e) =>
-        {
-            ViewModel.SwitchToPolylineDrawingMode();
-            ViewModel.SelectColor(_color);
-        };
+        DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
 ColorPickerControl
             .GetObservable(Avalonia.Controls.ColorView.ColorProperty)
-            .Subscribe(color =>
-            {
-                _color = color;
-                ViewModel.SelectColor(_color);
-            });
+            .Subscribe(color => ViewModel.SelectColor(color));
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)

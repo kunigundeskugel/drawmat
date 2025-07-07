@@ -18,6 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     public GroupShape RootGroup { get; } = new();
     private string _title = "";
     private IInteractionMode _currentMode;
+    private Color _color = Colors.Black;
 
     public MainViewModel()
     {
@@ -26,11 +27,18 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
     public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
-    public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
+    public void PointerPressed(Point position)
+    {
+        _currentMode.ColorSelected(this, _color);
+        _currentMode.PointerPressed(this, position);
+    }
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
     public IEnumerable<FlyoutAction> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions(this);
-    public void SelectColor(Color selectedColor) => _currentMode.ColorSelected(this, selectedColor);
+    public void SelectColor(Color selectedColor)
+    {
+        _color = selectedColor;
+    }
 
     public IEnumerable<Control> GetVisuals()
     {
