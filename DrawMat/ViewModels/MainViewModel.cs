@@ -27,17 +27,19 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SwitchToSelectionInteractionMode() => _currentMode = new SelectionInteractionMode();
     public void SwitchToPolylineDrawingMode() => _currentMode = new PolylineDrawingMode();
-    public void PointerPressed(Point position)
-    {
-        _currentMode.ColorSelected(this, _color);
-        _currentMode.PointerPressed(this, position);
-    }
+    public void PointerPressed(Point position) => _currentMode.PointerPressed(this, position);
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
     public IEnumerable<FlyoutAction> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions(this);
+
     public void SelectColor(Color selectedColor)
     {
         _color = selectedColor;
+    }
+
+    public Color getColor()
+    {
+        return _color;
     }
 
     public IEnumerable<Control> GetVisuals()
