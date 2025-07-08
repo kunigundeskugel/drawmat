@@ -18,7 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     public GroupShape RootGroup { get; } = new();
     private string _title = "";
     private IInteractionMode _currentMode;
-    private Color _color = Colors.Black;
+    public Color CurrentColor { get; private set; } = Colors.Black;
 
     public MainViewModel()
     {
@@ -34,12 +34,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     public void SelectColor(Color selectedColor)
     {
-        _color = selectedColor;
-    }
-
-    public Color getColor()
-    {
-        return _color;
+        CurrentColor = selectedColor;
     }
 
     public IEnumerable<Control> GetVisuals()
