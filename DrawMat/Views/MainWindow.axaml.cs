@@ -31,6 +31,9 @@ public partial class MainWindow : Window
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
+ColorPickerControl
+            .GetObservable(Avalonia.Controls.ColorView.ColorProperty)
+            .Subscribe(color => ViewModel.SelectColor(color));
     }
 
     private void Canvas_PointerPressed(object? sender, PointerPressedEventArgs e)

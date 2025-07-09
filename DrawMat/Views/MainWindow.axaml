@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="https://github.com/avaloniaui"
         xmlns:vm="clr-namespace:DrawMat.ViewModels"
+        xmlns:colorpicker="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.ColorPicker"
         x:Class="DrawMat.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="DrawMat"
@@ -26,5 +27,12 @@
                     PointerMoved="Canvas_PointerMoved"
                     PointerReleased="Canvas_PointerReleased"/>
         </Border>
+
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <colorpicker:ColorPicker x:Name="ColorPickerControl"
+                                     Width="100"
+                                     Height="50"
+                                     Color="Blue"/>
+        </StackPanel>
     </StackPanel>
 </Window>

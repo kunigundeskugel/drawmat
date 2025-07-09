@@ -30,7 +30,7 @@ public class PolylineDrawingMode : IInteractionMode
 
     public void PointerPressed(MainViewModel vm, Point position)
     {
-        _currentShape = new PolylineShape(new List<Point> { position });
+        _currentShape = new PolylineShape(new List<Point> { position }, vm.CurrentColor);
     }
 
     public void PointerMoved(MainViewModel vm, Point position)

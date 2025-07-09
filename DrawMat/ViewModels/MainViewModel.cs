@@ -1,12 +1,14 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Collections;
+using Avalonia.Media;
 using DrawMat.Models;
 using DrawMat.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Reactive.Linq;
 using System.Linq;
 
 namespace DrawMat.ViewModels;
@@ -16,6 +18,7 @@ public class MainViewModel : INotifyPropertyChanged
     public GroupShape RootGroup { get; } = new();
     private string _title = "";
     private IInteractionMode _currentMode;
+    public Color CurrentColor { get; private set; } = Colors.Black;
 
     public MainViewModel()
     {
@@ -28,6 +31,11 @@ public class MainViewModel : INotifyPropertyChanged
     public void PointerMoved(Point position) => _currentMode.PointerMoved(this, position);
     public void PointerReleased(Point position) => _currentMode.PointerReleased(this, position);
     public IEnumerable<FlyoutAction> GetSupportedFlyoutActions() => _currentMode.GetSupportedFlyoutActions(this);
+
+    public void SelectColor(Color selectedColor)
+    {
+        CurrentColor = selectedColor;
+    }
 
     public IEnumerable<Control> GetVisuals()
     {
