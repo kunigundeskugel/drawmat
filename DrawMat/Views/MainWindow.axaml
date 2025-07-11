@@ -6,8 +6,11 @@
         x:Class="DrawMat.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="DrawMat"
-        Width="400"
-        Height="200">
+        Background="Gray"
+        Width="800"
+        Height="600"
+        MinWidth="400"
+        MinHeight="300">
 
     <Window.DataContext>
         <vm:MainViewModel />
@@ -20,13 +23,17 @@
             <Button Content="Export as PNG" Name="SaveImageButton" Margin="10,0,0,0" />
         </StackPanel>
 
-        <Border ClipToBounds="True" Width="800" Height="600">
-            <Canvas Background="White"
-                    x:Name="DrawArea"
-                    PointerPressed="Canvas_PointerPressed"
-                    PointerMoved="Canvas_PointerMoved"
-                    PointerReleased="Canvas_PointerReleased"/>
-        </Border>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="10">
+          <Border x:Name="SaveImageArea" ClipToBounds="True" Width="800" Height="600">
+              <Canvas Background="White"
+                      x:Name="DrawArea"
+                      PointerPressed="Canvas_PointerPressed"
+                      PointerMoved="Canvas_PointerMoved"
+                      PointerReleased="Canvas_PointerReleased"/>
+          </Border>
+        </ScrollViewer>
 
         <StackPanel Orientation="Horizontal" Margin="10">
             <colorpicker:ColorPicker x:Name="ColorPickerControl"

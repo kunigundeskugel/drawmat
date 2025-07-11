@@ -31,7 +31,9 @@ public partial class MainWindow : Window
         DrawPolylineButton.Click += (s, e) => ViewModel.SwitchToPolylineDrawingMode();
         SelectButton.Click += (s, e) => ViewModel.SwitchToSelectionInteractionMode();
         SaveImageButton.Click += (s, e) => OnSaveImageClick(s, e);
-ColorPickerControl
+        SaveImageArea.Width = 1000;
+        SaveImageArea.Height = 300;
+        ColorPickerControl
             .GetObservable(Avalonia.Controls.ColorView.ColorProperty)
             .Subscribe(color => ViewModel.SelectColor(color));
     }
