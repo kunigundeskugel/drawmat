@@ -17,16 +17,10 @@ public abstract class ShapeBase
 
     public virtual Control ToControl()
     {
-        var canvas = new Canvas();
-        var bboxRect = CreateBoundingBoxVisual();
-        if (bboxRect != null)
-        {
-            canvas.Children.Add(bboxRect);
-        }
-        return canvas;
+        return new Canvas();
     }
 
-    protected virtual Rectangle CreateBoundingBoxVisual()
+    public virtual Rectangle CreateBoundingBoxVisual()
     {
         if (BBox.IsEmpty) return new Rectangle();
         var rect = new Rectangle
@@ -47,17 +41,19 @@ public class PolylineShape : ShapeBase
 {
     public List<Point> Points { get; set; } = new();
     public double StrokeThickness { get; set; } = 2.0;
+    private Color _strokeColor;
 
-    public PolylineShape(List<Point> points)
+    public PolylineShape(List<Point> points, Color color)
     {
         BBox = new BoundingBox();
+        _strokeColor = color;
         foreach (var point in points)
         {
             AddPoint(point);
         }
     }
 
-    protected override Rectangle CreateBoundingBoxVisual()
+    public override Rectangle CreateBoundingBoxVisual()
     {
         var rect = base.CreateBoundingBoxVisual();
         rect.Stroke = Brushes.Red;
@@ -70,7 +66,7 @@ public class PolylineShape : ShapeBase
         var polyline = new Polyline
         {
             Points = new AvaloniaList<Point>(Points),
-            Stroke = Brushes.Black,
+            Stroke = new SolidColorBrush(_strokeColor),
             StrokeThickness = StrokeThickness
         };
         canvas.Children.Add(polyline);
@@ -88,6 +84,59 @@ public class PolylineShape : ShapeBase
 public class GroupShape : ShapeBase
 {
     public List<ShapeBase> Children { get; set; } = new();
+
+    public void Add(ShapeBase shape)
+    {
+        Children.Add(shape);
+        UpdateBoundingBox();
+    }
+
+    public void Add(List<ShapeBase> shapes)
+    {
+        foreach (var shape in shapes)
+        {
+            Children.Add(shape);
+        }
+        UpdateBoundingBox();
+    }
+
+    public override Rectangle CreateBoundingBoxVisual()
+    {
+        UpdateBoundingBox();
+        var rect = base.CreateBoundingBoxVisual();
+        rect.Stroke = Brushes.Blue;
+        return rect;
+    }
+
+    public List<ShapeBase> SearchChildren(Point position)
+    {
+        var hits = new List<ShapeBase>();
+
+        foreach (var child in Children)
+        {
+            if (child.BBox.Contains(position))
+            {
+                hits.Add(child);
+            }
+        }
+
+        return hits;
+    }
+
+    public List<ShapeBase> SearchChildren(BoundingBox box)
+    {
+        var hits = new List<ShapeBase>();
+
+        foreach (var child in Children)
+        {
+            if (box.Contains(child.BBox))
+            {
+                hits.Add(child);
+            }
+        }
+
+        return hits;
+    }
 
     public void UpdateBoundingBox()
     {
