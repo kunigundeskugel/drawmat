@@ -16,14 +16,14 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="10">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
             <Button Content="Select Items" Name="SelectButton" />
             <Button Content="Draw Polyline" Name="DrawPolylineButton" Margin="10,0,0,0" />
             <Button Content="Export as PNG" Name="SaveImageButton" Margin="10,0,0,0" />
         </StackPanel>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       Padding="10">
           <Border x:Name="SaveImageArea" ClipToBounds="True" Width="800" Height="600">
@@ -35,11 +35,11 @@
           </Border>
         </ScrollViewer>
 
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <Border Grid.Row="1" Width="120" Height="60" Background="Black" CornerRadius="8" Padding="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
             <colorpicker:ColorPicker x:Name="ColorPickerControl"
                                      Width="100"
                                      Height="50"
                                      Color="Blue"/>
-        </StackPanel>
-    </StackPanel>
+        </Border>
+    </Grid>
 </Window>
