@@ -6,33 +6,40 @@
         x:Class="DrawMat.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="DrawMat"
-        Width="400"
-        Height="200">
+        Background="Gray"
+        Width="800"
+        Height="600"
+        MinWidth="400"
+        MinHeight="300">
 
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="10">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
             <Button Content="Select Items" Name="SelectButton" />
             <Button Content="Draw Polyline" Name="DrawPolylineButton" Margin="10,0,0,0" />
             <Button Content="Export as PNG" Name="SaveImageButton" Margin="10,0,0,0" />
         </StackPanel>
 
-        <Border ClipToBounds="True" Width="800" Height="600">
-            <Canvas Background="White"
-                    x:Name="DrawArea"
-                    PointerPressed="Canvas_PointerPressed"
-                    PointerMoved="Canvas_PointerMoved"
-                    PointerReleased="Canvas_PointerReleased"/>
-        </Border>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="10">
+          <Border x:Name="SaveImageArea" ClipToBounds="True" Width="800" Height="600">
+              <Canvas Background="White"
+                      x:Name="DrawArea"
+                      PointerPressed="Canvas_PointerPressed"
+                      PointerMoved="Canvas_PointerMoved"
+                      PointerReleased="Canvas_PointerReleased"/>
+          </Border>
+        </ScrollViewer>
 
-        <StackPanel Orientation="Horizontal" Margin="10">
+        <Border Grid.Row="1" Width="120" Height="60" Background="Black" CornerRadius="8" Padding="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
             <colorpicker:ColorPicker x:Name="ColorPickerControl"
                                      Width="100"
                                      Height="50"
                                      Color="Blue"/>
-        </StackPanel>
-    </StackPanel>
+        </Border>
+    </Grid>
 </Window>
